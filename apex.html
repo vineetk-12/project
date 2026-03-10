@@ -1,0 +1,1577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APEX MOTORS — Automotive Excellence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=DM+Sans:wght@200;300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <link rel="stylesheet" href="apex.css">
+    
+  </head>
+  <body>
+    <!-- PRELOADER -->
+    <div id="preloader">
+      <div class="pre-logo">APEX MOTORS</div>
+      <div class="pre-bar-wrap"><div class="pre-bar" id="preBar"></div></div>
+      <div class="pre-pct" id="prePct">000</div>
+    </div>
+
+    <!-- NAV -->
+    <nav id="navbar">
+  <a href="#" class="nav-logo">APEX<em>.</em>MOTORS</a>
+
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="nav-menu" id="navMenu">
+    <ul class="nav-links">
+      <li><a href="#drive-section">Drive</a></li>
+      <li><a href="#brands">Brands</a></li>
+      <li><a href="#specs-section">Collection</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#concierge">Concierge</a></li>
+    </ul>
+
+    <button class="nav-btn">Private Viewing</button>
+  </div>
+</nav>
+
+   
+    <section id="hero">
+    
+      <video id="heroVideo" autoplay muted loop playsinline>
+        <source src="car.webm" type="video/webm" />
+      </video>
+      <div class="hero-overlay-left"></div>
+      <div class="hero-overlay-vert"></div>
+      <div class="hero-grid-texture"></div>
+
+      <div class="hero-content">
+        <div class="hero-tag" id="heroTag">
+          <span class="hero-tag-line"></span>
+          Est. 2009 · Automotive Excellence
+          <span class="hero-tag-line"></span>
+        </div>
+        <div class="hero-year" id="heroYear">2025 Collection</div>
+        <h1 class="hero-headline" id="heroHeadline">
+          <span class="hero-hl-line"
+            ><span class="hero-hl-inner" id="hhl0">BEYOND</span></span
+          >
+          <span class="hero-hl-line"
+            ><span class="hero-hl-inner gold" id="hhl1">ORDINARY</span></span
+          >
+          <span class="hero-hl-line"
+            ><span class="hero-hl-inner" id="hhl2">DRIVE</span></span
+          >
+        </h1>
+        <div class="hero-rule" id="heroRule"></div>
+        <div class="hero-sub-wrap" id="heroSubWrap">
+          <p class="hero-sub-text">
+            An invitation-only collection of the world's most extraordinary
+            automobiles. Each machine, a statement of absolute perfection.
+          </p>
+        </div>
+        <div class="hero-cta-row" id="heroCtaRow">
+          <button class="hero-cta-btn"><span>Explore Collection</span></button>
+          <a href="#concierge" class="hero-cta-link">Private Viewing</a>
+        </div>
+      </div>
+
+      <!-- Stats Row  -->
+      <div class="hero-stats-row" id="heroStatsRow">
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="24">0</div>
+          <div class="hero-stat-label">Brands</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="840">0</div>
+          <div class="hero-stat-label">Vehicles</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="15">0</div>
+          <div class="hero-stat-label">Years</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker-strip">
+      <div class="ticker-inner" id="ticker">
+        <span class="ti">Rolls-Royce</span><span class="ti-dot">◆</span>
+        <span class="ti">BMW M Division</span><span class="ti-dot">◆</span>
+        <span class="ti">Mercedes-Benz AMG</span><span class="ti-dot">◆</span>
+        <span class="ti">Ferrari Maranello</span><span class="ti-dot">◆</span>
+        <span class="ti">Lamborghini Sant'Agata</span
+        ><span class="ti-dot">◆</span> <span class="ti">Porsche Stuttgart</span
+        ><span class="ti-dot">◆</span> <span class="ti">Bentley Crewe</span
+        ><span class="ti-dot">◆</span> <span class="ti">Aston Martin</span
+        ><span class="ti-dot">◆</span> <span class="ti">McLaren Woking</span
+        ><span class="ti-dot">◆</span> <span class="ti">Bugatti Molsheim</span
+        ><span class="ti-dot">◆</span> <span class="ti">Pagani Modena</span
+        ><span class="ti-dot">◆</span> <span class="ti">Koenigsegg</span
+        ><span class="ti-dot">◆</span> <span class="ti">Rolls-Royce</span
+        ><span class="ti-dot">◆</span> <span class="ti">BMW M Division</span
+        ><span class="ti-dot">◆</span> <span class="ti">Mercedes-Benz AMG</span
+        ><span class="ti-dot">◆</span> <span class="ti">Ferrari Maranello</span
+        ><span class="ti-dot">◆</span>
+        <span class="ti">Lamborghini Sant'Agata</span
+        ><span class="ti-dot">◆</span> <span class="ti">Porsche Stuttgart</span
+        ><span class="ti-dot">◆</span> <span class="ti">Bentley Crewe</span
+        ><span class="ti-dot">◆</span> <span class="ti">Aston Martin</span
+        ><span class="ti-dot">◆</span> <span class="ti">McLaren Woking</span
+        ><span class="ti-dot">◆</span> <span class="ti">Bugatti Molsheim</span
+        ><span class="ti-dot">◆</span> <span class="ti">Pagani Modena</span
+        ><span class="ti-dot">◆</span> <span class="ti">Koenigsegg</span
+        ><span class="ti-dot">◆</span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div id="stats">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" data-to="24">0</div>
+          <div class="stat-label">Luxury Brands</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-to="840">0</div>
+          <div class="stat-label">Vehicles in Stock</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-to="15">0</div>
+          <div class="stat-label">Years of Excellence</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-to="98"><sup>%</sup>0</div>
+          <div class="stat-label">Client Satisfaction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRIVE SECTION -->
+    <div id="drive-section">
+      <div class="drive-sticky">
+        <canvas id="drive-canvas"></canvas>
+        <div class="drive-atmosphere" id="driveAtmosphere"></div>
+        <div class="drive-road-grid">
+          <svg
+            id="driveRoadSVG"
+            viewBox="0 0 1440 260"
+            preserveAspectRatio="none"
+          >
+           
+           
+          </svg>
+        </div>
+        <div class="drive-scan" id="driveScan"></div>
+        <div class="drive-corner tl"></div>
+        <div class="drive-corner tr"></div>
+        <div class="drive-corner bl"></div>
+        <div class="drive-corner br"></div>
+        <div class="drive-section-label">Pure Performance</div>
+        <div class="drive-progress-track">
+          <div class="drive-progress-fill" id="driveProgressFill"></div>
+          <div class="drive-progress-dot" id="driveProgressDot"></div>
+        </div>
+        <div class="drive-chapter-dots" id="driveChapterDots">
+          <button class="dcd active"></button>
+          <button class="dcd"></button>
+          <button class="dcd"></button>
+          <button class="dcd"></button>
+        </div>
+        <div class="ch-divider"></div>
+        <div
+          id="speedBurstContainer"
+          style="
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 6;
+            overflow: hidden;
+          "
+        ></div>
+
+        <!-- CHAPTER 0 -->
+        <div class="drive-chapter ch-active" id="driveChapter0">
+          <div
+            class="ch-overlay"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(6, 6, 8, 0.7) 0%,
+                rgba(6, 8, 18, 0.4) 100%
+              );
+            "
+          ></div>
+          <div class="dch-left">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 169, 81, 0.15) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #060608, #0a0c14);
+              "
+            ></div>
+            <div class="dch-chapter-num">Chapter 01 · Arrival</div>
+            <h2 class="dch-headline">
+              <span>BUILT FOR</span>
+              <span class="hl-gold">THOSE WHO</span>
+              <span>DEMAND</span>
+            </h2>
+            <p class="dch-desc">
+              Every machine in our collection is hand-selected — not just for
+              performance, but for the story it tells. These are automobiles
+              that arrive before you do.
+            </p>
+            <div class="dch-metrics">
+              <div class="dch-metric">
+                <div class="dch-m-val">24<sub>brands</sub></div>
+                <div class="dch-m-label">Curated Marques</div>
+              </div>
+              <div class="dch-metric">
+                <div class="dch-m-val">840<sub>+</sub></div>
+                <div class="dch-m-label">Vehicles Available</div>
+              </div>
+            </div>
+          </div>
+          <div class="dch-right">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 169, 81, 0.15) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #060608, #0a0c14);
+              "
+            ></div>
+            <div class="dch-photo-group" id="dChPhoto0">
+              <div class="dch-photo-frame">
+                <img
+                  src="rollsroyce.jpg"
+                  alt="Rolls-Royce"
+                  class="dch-photo-img"
+                />
+              </div>
+              <div class="dch-photo-border"></div>
+              <div class="dch-photo-corner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAPTER 1 -->
+        <div class="drive-chapter" id="driveChapter1">
+          <div
+            class="ch-overlay"
+            id="chOverlay1"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(20, 8, 4, 0.7) 0%,
+                rgba(6, 6, 8, 0.3) 100%
+              );
+            "
+          ></div>
+          <div class="dch-left">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 50, 10, 0.18) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #0a0604, #080608);
+              "
+            ></div>
+            <div class="dch-chapter-num">Chapter 02 · Acceleration</div>
+            <h2 class="dch-headline">
+              <span>ZERO TO</span><span class="hl-gold">100 KM/H</span
+              ><span>IN 2.5s</span>
+            </h2>
+            <p class="dch-desc">
+              Heart-stopping thrust from twin-turbocharged V8s and hybrid V12
+              powertrains. Pure, unfiltered acceleration that pins you to your
+              seat.
+            </p>
+            <div class="dch-metrics">
+              <div class="dch-metric">
+                <div class="dch-m-val">1015<sub>cv</sub></div>
+                <div class="dch-m-label">Peak Power</div>
+              </div>
+              <div class="dch-metric">
+                <div class="dch-m-val">2.5<sub>sec</sub></div>
+                <div class="dch-m-label">0–100 km/h</div>
+              </div>
+              <div class="dch-metric">
+                <div class="dch-m-val">350<sub>+</sub></div>
+                <div class="dch-m-label">Top Speed km/h</div>
+              </div>
+            </div>
+          </div>
+          <div class="dch-right">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 50, 10, 0.18) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #0a0604, #080608);
+              "
+            ></div>
+            <div class="dch-photo-group" id="dChPhoto1">
+              <div class="dch-photo-frame">
+                <img
+                  src="ferrari.avif"
+                  alt="Ferrari Speed"
+                  class="dch-photo-img"
+                />
+              </div>
+              <div
+                class="dch-photo-border"
+                style="border-color: rgba(200, 50, 20, 0.3)"
+              ></div>
+              <div class="dch-photo-corner" style="border-color: #c0281e"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAPTER 2 -->
+        <div class="drive-chapter" id="driveChapter2">
+          <div
+            class="ch-overlay"
+            id="chOverlay2"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(8, 6, 0, 0.7) 0%,
+                rgba(6, 6, 8, 0.3) 100%
+              );
+            "
+          ></div>
+          <div class="dch-left">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 140, 0, 0.2) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #0c0800, #080608);
+              "
+            ></div>
+            <div class="dch-chapter-num">Chapter 03 · Power</div>
+            <h2 class="dch-headline">
+              <span>OVER</span><span class="hl-gold">1,000 CV</span
+              ><span>UNLEASHED</span>
+            </h2>
+            <p class="dch-desc">
+              Hybrid V12 systems that merge screaming combustion with instant
+              electric torque. These powertrains are engineering masterpieces.
+            </p>
+            <div class="dch-metrics">
+              <div class="dch-metric">
+                <div class="dch-m-val">6.5<sub>V12</sub></div>
+                <div class="dch-m-label">Displacement</div>
+              </div>
+              <div class="dch-metric">
+                <div class="dch-m-val">1015<sub>cv</sub></div>
+                <div class="dch-m-label">Combined Output</div>
+              </div>
+            </div>
+          </div>
+          <div class="dch-right">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(200, 140, 0, 0.2) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #0c0800, #080608);
+              "
+            ></div>
+            <div class="dch-photo-group" id="dChPhoto2">
+              <div class="dch-photo-frame">
+                <img
+                  src="jeep.jpg"
+                  alt="Lamborghini Power"
+                  class="dch-photo-img"
+                />
+              </div>
+              <div
+                class="dch-photo-border"
+                style="border-color: rgba(200, 140, 0, 0.3)"
+              ></div>
+              <div class="dch-photo-corner" style="border-color: #e8c97a"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAPTER 3 -->
+        <div class="drive-chapter" id="driveChapter3">
+          <div
+            class="ch-overlay"
+            id="chOverlay3"
+            style="
+              background: linear-gradient(
+                135deg,
+                rgba(4, 6, 16, 0.7) 0%,
+                rgba(6, 6, 8, 0.3) 100%
+              );
+            "
+          ></div>
+          <div class="dch-left">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(80, 100, 200, 0.15) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #04040c, #060808);
+              "
+            ></div>
+            <div class="dch-chapter-num">Chapter 04 · Exclusivity</div>
+            <h2 class="dch-headline">
+              <span>FOR THE</span><span class="hl-gold">CHOSEN</span
+              ><span>FEW</span>
+            </h2>
+            <p class="dch-desc">
+              These are not automobiles. They are rolling works of art — limited
+              by design, extraordinary by nature. Each one a declaration to the
+              world.
+            </p>
+            <div class="dch-metrics">
+              <div class="dch-metric">
+                <div class="dch-m-val">∞<sub></sub></div>
+                <div class="dch-m-label">No Ceiling</div>
+              </div>
+              <div class="dch-metric">
+                <div class="dch-m-val">1<sub>of 1</sub></div>
+                <div class="dch-m-label">Bespoke Config</div>
+              </div>
+            </div>
+          </div>
+          <div class="dch-right">
+            <div
+              class="dch-visual-bg"
+              style="
+                background:
+                  radial-gradient(
+                    ellipse 60% 50% at 50% 50%,
+                    rgba(80, 100, 200, 0.15) 0%,
+                    transparent 70%
+                  ),
+                  linear-gradient(160deg, #04040c, #060808);
+              "
+            ></div>
+            <div class="dch-photo-group" id="dChPhoto3">
+              <div class="dch-photo-frame">
+                <img
+                  src="porsche.jpg"
+                  alt="Bugatti Detail"
+                  class="dch-photo-img"
+                />
+              </div>
+              <div class="dch-photo-border"></div>
+              <div class="dch-photo-corner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRANDS HORIZONTAL SCROLL -->
+    <div id="brands">
+      <div class="brand-reveal-section">
+        <div class="brand-sticky">
+          <div class="brand-bg-text" id="brandBgText">COLLECTION</div>
+          <div style="position: absolute; top: 40px; left: 60px; z-index: 10">
+            <span class="section-eyebrow">Our Marques</span>
+            <h2
+              style="
+                font-family: &quot;Bebas Neue&quot;, sans-serif;
+                font-size: clamp(40px, 7vw, 90px);
+                line-height: 0.9;
+                color: var(--white);
+              "
+            >
+              THE FINEST<br /><span style="color: var(--gold)">BRANDS</span>
+            </h2>
+          </div>
+          <div class="brand-cards-track" id="brandTrack">
+            <div style="width: 60px; flex-shrink: 0"></div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="bmw.jpg" alt="BMW" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 30% 70%,
+                        rgba(0, 80, 200, 0.5),
+                        transparent 70%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">01</div>
+                <div class="bc-year-badge">Est. 1916</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">◉</span>
+                  <div class="bc-name">BMW</div>
+                  <div class="bc-origin">Germany · Munich</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"The Ultimate Driving Machine"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">M8</span
+                    ><span class="bc-model">7 Series</span
+                    ><span class="bc-model">XM</span
+                    ><span class="bc-model">i7</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="royce.jpg" alt="Rolls-Royce" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 50% 60%,
+                        rgba(160, 120, 60, 0.5),
+                        transparent 70%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">02</div>
+                <div class="bc-year-badge">Est. 1906</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">✦</span>
+                  <div class="bc-name">Rolls-Royce</div>
+                  <div class="bc-origin">United Kingdom · Crewe</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"Inspiring Greatness"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">Phantom</span
+                    ><span class="bc-model">Ghost</span
+                    ><span class="bc-model">Spectre</span
+                    ><span class="bc-model">Cullinan</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="mercedies.jpg" alt="Mercedes" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 60% 40%,
+                        rgba(160, 160, 160, 0.35),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">03</div>
+                <div class="bc-year-badge">Est. 1926</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">★</span>
+                  <div class="bc-name">Mercedes</div>
+                  <div class="bc-origin">Germany · Stuttgart</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"The Best or Nothing"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">Maybach S680</span
+                    ><span class="bc-model">AMG GT</span
+                    ><span class="bc-model">EQS</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img
+                  src="ferrari.avif"
+                  alt="Ferrari"
+                  class="bc-car-img"
+                />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 40% 60%,
+                        rgba(200, 0, 0, 0.55),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">04</div>
+                <div class="bc-year-badge">Est. 1939</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon" style="font-size: 56px">🐎</span>
+                  <div class="bc-name">Ferrari</div>
+                  <div class="bc-origin">Italy · Maranello</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"We are the competition"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">SF90</span
+                    ><span class="bc-model">Roma</span
+                    ><span class="bc-model">F8 Tributo</span
+                    ><span class="bc-model">812</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img
+                  src="lamborgany.jpg"
+                  alt="Lamborghini"
+                  class="bc-car-img"
+                />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 50% 40%,
+                        rgba(200, 130, 0, 0.5),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">05</div>
+                <div class="bc-year-badge">Est. 1963</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon" style="font-size: 56px">🐂</span>
+                  <div class="bc-name">Lamborghini</div>
+                  <div class="bc-origin">Italy · Sant'Agata</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"Expect the unexpected"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">Revuelto</span
+                    ><span class="bc-model">Huracán</span
+                    ><span class="bc-model">Urus S</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="porsche.jpg" alt="Porsche" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 65% 50%,
+                        rgba(100, 0, 0, 0.5),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">06</div>
+                <div class="bc-year-badge">Est. 1931</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">⚡</span>
+                  <div class="bc-name">Porsche</div>
+                  <div class="bc-origin">Germany · Stuttgart</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"There is no substitute"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">911 Turbo S</span
+                    ><span class="bc-model">Taycan</span
+                    ><span class="bc-model">Cayenne</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="bentley.jpg" alt="Bentley" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 40% 60%,
+                        rgba(0, 70, 30, 0.5),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">07</div>
+                <div class="bc-year-badge">Est. 1919</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">❖</span>
+                  <div class="bc-name">Bentley</div>
+                  <div class="bc-origin">United Kingdom · Crewe</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"Handcrafted performance"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">Continental GT</span
+                    ><span class="bc-model">Flying Spur</span
+                    ><span class="bc-model">Bentayga</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="aston.jpg" alt="Aston Martin" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 55% 45%,
+                        rgba(0, 40, 110, 0.5),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">08</div>
+                <div class="bc-year-badge">Est. 1913</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">⟡</span>
+                  <div class="bc-name">Aston Martin</div>
+                  <div class="bc-origin">United Kingdom · Gaydon</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"Power, Beauty, Soul"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">DB12</span
+                    ><span class="bc-model">Vantage</span
+                    ><span class="bc-model">DBS</span
+                    ><span class="bc-model">Valour</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img src="mc.jpg" alt="McLaren" class="bc-car-img" />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 50% 50%,
+                        rgba(220, 80, 0, 0.5),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">09</div>
+                <div class="bc-year-badge">Est. 1963</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">◈</span>
+                  <div class="bc-name">McLaren</div>
+                  <div class="bc-origin">United Kingdom · Woking</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"F1 technology, road legal"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">750S</span
+                    ><span class="bc-model">Artura</span
+                    ><span class="bc-model">GT</span
+                    ><span class="bc-model">Solus GT</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="brand-card">
+              <div class="brand-card-inner">
+                <img
+                  src="buggaati.avif"
+                  alt="Bugatti"
+                  class="bc-car-img"
+                />
+                <div
+                  class="bc-gradient"
+                  style="
+                    background:
+                      radial-gradient(
+                        ellipse at 50% 50%,
+                        rgba(20, 0, 100, 0.55),
+                        transparent 65%
+                      ),
+                      linear-gradient(
+                        to top,
+                        rgba(4, 4, 8, 0.97) 0%,
+                        rgba(4, 4, 8, 0.5) 45%,
+                        rgba(4, 4, 8, 0.1) 100%
+                      );
+                  "
+                ></div>
+                <div class="bc-num">10</div>
+                <div class="bc-year-badge">Est. 1909</div>
+                <div class="bc-logo-area">
+                  <span class="bc-logo-icon">◇</span>
+                  <div class="bc-name">Bugatti</div>
+                  <div class="bc-origin">France · Molsheim</div>
+                </div>
+                <div class="bc-edge"></div>
+                <div class="bc-bottom">
+                  <p class="bc-tagline">"Nothing is too beautiful"</p>
+                  <div class="bc-models">
+                    <span class="bc-model">Chiron</span
+                    ><span class="bc-model">Tourbillon</span
+                    ><span class="bc-model">W16 Mistral</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="width: 60px; flex-shrink: 0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARQUEE -->
+    <div class="marquee-section">
+      <div class="marquee-row row1">
+        <span class="mq-item">ROLLS-ROYCE</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">FERRARI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">LAMBORGHINI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">BENTLEY</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">PORSCHE</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">BUGATTI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">ROLLS-ROYCE</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">FERRARI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">LAMBORGHINI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">BENTLEY</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">PORSCHE</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">BUGATTI</span>
+        <div class="mq-sep"></div>
+      </div>
+      <div class="marquee-row row2" style="margin-top: 16px">
+        <span class="mq-item">BMW</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">MERCEDES-BENZ</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">MCLAREN</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">ASTON MARTIN</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">PAGANI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">KOENIGSEGG</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">BMW</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">MERCEDES-BENZ</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">MCLAREN</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">ASTON MARTIN</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">PAGANI</span>
+        <div class="mq-sep"></div>
+        <span class="mq-item">KOENIGSEGG</span>
+        <div class="mq-sep"></div>
+      </div>
+    </div>
+
+    <!-- SPECS -->
+    <div id="specs-section">
+      <div class="specs-sticky">
+        <div class="specs-visual" id="specsVisualPanel">
+          <div
+            id="specsBgOverlay"
+            style="
+              position: absolute;
+              inset: 0;
+              transition: background 0.9s ease;
+              z-index: 0;
+              background: linear-gradient(160deg, #08080c 0%, #0a0f1a 100%);
+            "
+          ></div>
+          <div class="spec-car-img sc-active" id="scImg0">
+            <div class="spec-car-frame-group">
+              <div class="spec-car-frame">
+                <img
+                  src="RollsRoyce-Phantom-VIII.avif"
+                  alt="Rolls-Royce Phantom VIII"
+                  class="spec-real-car"
+                />
+              </div>
+              <div class="dch-photo-border"></div>
+              <div class="dch-photo-corner"></div>
+            </div>
+            <div
+              class="sci-glow"
+              style="--gcolor: rgba(200, 169, 81, 0.3)"
+            ></div>
+            <div class="sci-label">Rolls-Royce Phantom VIII</div>
+          </div>
+          <div class="spec-car-img" id="scImg1">
+            <div class="spec-car-frame-group">
+              <div class="spec-car-frame">
+                <img
+                  src="ferrari.avif"
+                  alt="Ferrari SF90 Stradale"
+                  class="spec-real-car"
+                />
+              </div>
+              <div
+                class="dch-photo-border"
+                style="border-color: rgba(200, 20, 20, 0.35)"
+              ></div>
+              <div class="dch-photo-corner" style="border-color: #c0281e"></div>
+            </div>
+            <div
+              class="sci-glow"
+              style="--gcolor: rgba(200, 20, 20, 0.35)"
+            ></div>
+            <div class="sci-label">Ferrari SF90 Stradale</div>
+          </div>
+          <div class="spec-car-img" id="scImg2">
+            <div class="spec-car-frame-group">
+              <div class="spec-car-frame">
+                <img
+                  src="lamborghini-revuelto.avif"
+                  alt="Lamborghini Revuelto"
+                  class="spec-real-car"
+                />
+              </div>
+              <div
+                class="dch-photo-border"
+                style="border-color: rgba(200, 140, 0, 0.35)"
+              ></div>
+              <div class="dch-photo-corner" style="border-color: #e8c97a"></div>
+            </div>
+            <div
+              class="sci-glow"
+              style="--gcolor: rgba(200, 140, 0, 0.35)"
+            ></div>
+            <div class="sci-label">Lamborghini Revuelto</div>
+          </div>
+          <div class="spec-car-img" id="scImg3">
+            <div class="spec-car-frame-group">
+              <div class="spec-car-frame">
+                <img
+                  src="porsche 911.webp"
+                  alt="Porsche 911 Turbo S"
+                  class="spec-real-car"
+                />
+              </div>
+              <div
+                class="dch-photo-border"
+                style="border-color: rgba(120, 60, 200, 0.3)"
+              ></div>
+              <div class="dch-photo-corner" style="border-color: #a080d0"></div>
+            </div>
+            <div
+              class="sci-glow"
+              style="--gcolor: rgba(120, 60, 200, 0.3)"
+            ></div>
+            <div class="sci-label">Porsche 911 Turbo S</div>
+          </div>
+          <div
+            id="scanLine"
+            style="
+              position: absolute;
+              left: 0;
+              right: 0;
+              height: 1px;
+              background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(200, 169, 81, 0.8),
+                transparent
+              );
+              top: 40%;
+              pointer-events: none;
+              opacity: 0;
+              z-index: 10;
+            "
+          ></div>
+          <div
+            id="specsGlowInner"
+            style="
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              height: 35%;
+              background: radial-gradient(
+                ellipse at 50% 100%,
+                rgba(200, 169, 81, 0.18) 0%,
+                transparent 70%
+              );
+              pointer-events: none;
+              z-index: 1;
+              transition: background 0.9s ease;
+            "
+          ></div>
+        </div>
+        <div class="specs-info">
+          <div class="spec-slides-wrap" id="specSlides">
+            <div class="spec-slide s-active">
+              <div class="spec-brand-tag">Rolls-Royce · Flagship</div>
+              <h2 class="spec-car-name">
+                Rolls-Royce<br /><em>Phantom VIII</em>
+              </h2>
+              <p class="spec-variant">Extended Wheelbase · Starlight</p>
+              <p class="spec-desc">
+                The most complete expression of Rolls-Royce. A hand-crafted
+                sanctuary of bespoke luxury with 1,340 fibre optic lights
+                hand-sewn into the headliner.
+              </p>
+              <div class="spec-grid">
+                <div class="spec-cell">
+                  <div class="spec-val">6.75<small>L</small></div>
+                  <div class="spec-key">Engine</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">563<small>bhp</small></div>
+                  <div class="spec-key">Power</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">5.3<small>s</small></div>
+                  <div class="spec-key">0–100 km/h</div>
+                </div>
+              </div>
+              <div class="spec-price">₹11.2 Cr <span>onwards</span></div>
+              <div style="display: flex; gap: 14px">
+                <button class="nav-btn" style="padding: 14px 28px">
+                  Enquire</button
+                ><button
+                  style="
+                    background: none;
+                    border: 1px solid rgba(200, 169, 81, 0.3);
+                    color: var(--white2);
+                    padding: 14px 28px;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                  "
+                  onmouseover="this.style.borderColor = 'var(--gold)'"
+                  onmouseout="this.style.borderColor = 'rgba(200,169,81,.3)'"
+                >
+                  Configure
+                </button>
+              </div>
+            </div>
+            <div class="spec-slide">
+              <div class="spec-brand-tag">Ferrari · Hybrid Supercar</div>
+              <h2 class="spec-car-name">Ferrari<br /><em>SF90 Stradale</em></h2>
+              <p class="spec-variant">Assetto Fiorano · Spider</p>
+              <p class="spec-desc">
+                Ferrari's most powerful road car. A plug-in hybrid combining a
+                twin-turbo V8 with three electric motors for a combined 1,000 CV
+                output.
+              </p>
+              <div class="spec-grid">
+                <div class="spec-cell">
+                  <div class="spec-val">4.0<small>V8+</small></div>
+                  <div class="spec-key">Engine</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">1000<small>CV</small></div>
+                  <div class="spec-key">Power</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">2.5<small>s</small></div>
+                  <div class="spec-key">0–100 km/h</div>
+                </div>
+              </div>
+              <div class="spec-price">₹7.5 Cr <span>onwards</span></div>
+              <div style="display: flex; gap: 14px">
+                <button class="nav-btn" style="padding: 14px 28px">
+                  Enquire</button
+                ><button
+                  style="
+                    background: none;
+                    border: 1px solid rgba(200, 169, 81, 0.3);
+                    color: var(--white2);
+                    padding: 14px 28px;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                  "
+                  onmouseover="this.style.borderColor = 'var(--gold)'"
+                  onmouseout="this.style.borderColor = 'rgba(200,169,81,.3)'"
+                >
+                  Configure
+                </button>
+              </div>
+            </div>
+            <div class="spec-slide">
+              <div class="spec-brand-tag">Lamborghini · V12 Hybrid</div>
+              <h2 class="spec-car-name">Lamborghini<br /><em>Revuelto</em></h2>
+              <p class="spec-variant">V12 HPEV · Coupe</p>
+              <p class="spec-desc">
+                The Revuelto is the first Lamborghini V12 hybrid. Raw,
+                theatrical, impossibly fast — a supercar that redefines what a
+                naturally aspirated V12 can be.
+              </p>
+              <div class="spec-grid">
+                <div class="spec-cell">
+                  <div class="spec-val">6.5<small>V12</small></div>
+                  <div class="spec-key">Engine</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">1015<small>CV</small></div>
+                  <div class="spec-key">Power</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">2.5<small>s</small></div>
+                  <div class="spec-key">0–100 km/h</div>
+                </div>
+              </div>
+              <div class="spec-price">₹8.9 Cr <span>onwards</span></div>
+              <div style="display: flex; gap: 14px">
+                <button class="nav-btn" style="padding: 14px 28px">
+                  Enquire</button
+                ><button
+                  style="
+                    background: none;
+                    border: 1px solid rgba(200, 169, 81, 0.3);
+                    color: var(--white2);
+                    padding: 14px 28px;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                  "
+                  onmouseover="this.style.borderColor = 'var(--gold)'"
+                  onmouseout="this.style.borderColor = 'rgba(200,169,81,.3)'"
+                >
+                  Configure
+                </button>
+              </div>
+            </div>
+            <div class="spec-slide">
+              <div class="spec-brand-tag">Porsche · Sport GT</div>
+              <h2 class="spec-car-name">Porsche<br /><em>911 Turbo S</em></h2>
+              <p class="spec-variant">992 Generation · Cabriolet</p>
+              <p class="spec-desc">
+                The definitive 911. Decades of motorsport knowledge refined into
+                a car that's as comfortable daily driving as it is demolishing a
+                track lap record.
+              </p>
+              <div class="spec-grid">
+                <div class="spec-cell">
+                  <div class="spec-val">3.8<small>Flat-6</small></div>
+                  <div class="spec-key">Engine</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">650<small>PS</small></div>
+                  <div class="spec-key">Power</div>
+                </div>
+                <div class="spec-cell">
+                  <div class="spec-val">2.7<small>s</small></div>
+                  <div class="spec-key">0–100 km/h</div>
+                </div>
+              </div>
+              <div class="spec-price">₹3.5 Cr <span>onwards</span></div>
+              <div style="display: flex; gap: 14px">
+                <button class="nav-btn" style="padding: 14px 28px">
+                  Enquire</button
+                ><button
+                  style="
+                    background: none;
+                    border: 1px solid rgba(200, 169, 81, 0.3);
+                    color: var(--white2);
+                    padding: 14px 28px;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                  "
+                  onmouseover="this.style.borderColor = 'var(--gold)'"
+                  onmouseout="this.style.borderColor = 'rgba(200,169,81,.3)'"
+                >
+                  Configure
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="spec-nav-dots" id="specDots">
+            <button class="snd a"></button><button class="snd"></button
+            ><button class="snd"></button><button class="snd"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <div class="exp-header" id="expHeader">
+        <div class="exp-header-content">
+          <span class="section-eyebrow">Why Apex Motors</span>
+          <h2 class="section-heading">The <em>Apex</em><br />Difference</h2>
+        </div>
+      </div>
+      <div class="exp-grid">
+        <div class="exp-card">
+          <span class="ec-num">01</span><span class="ec-icon">🔑</span>
+          <h3 class="ec-title">Private Viewings</h3>
+          <p class="ec-text">
+            Dedicated, pressure-free experiences with our expert concierge team
+            available at any hour.
+          </p>
+        </div>
+        <div class="exp-card">
+          <span class="ec-num">02</span><span class="ec-icon">🌍</span>
+          <h3 class="ec-title">Global Sourcing</h3>
+          <p class="ec-text">
+            Access rare and limited-edition models through our worldwide network
+            of authorized dealers.
+          </p>
+        </div>
+        <div class="exp-card">
+          <span class="ec-num">03</span><span class="ec-icon">✦</span>
+          <h3 class="ec-title">Bespoke Orders</h3>
+          <p class="ec-text">
+            From factory-order configurations to unique personalizations — every
+            detail crafted to your vision.
+          </p>
+        </div>
+        <div class="exp-card">
+          <span class="ec-num">04</span><span class="ec-icon">🛡️</span>
+          <h3 class="ec-title">Full Provenance</h3>
+          <p class="ec-text">
+            Every vehicle includes complete documentation and our exclusive Apex
+            Authenticity Certificate.
+          </p>
+        </div>
+        <div class="exp-card">
+          <span class="ec-num">05</span><span class="ec-icon">🚗</span>
+          <h3 class="ec-title">White-Glove Delivery</h3>
+          <p class="ec-text">
+            Your vehicle delivered to your door, fully prepared and detailed by
+            our logistics specialists.
+          </p>
+        </div>
+        <div class="exp-card">
+          <span class="ec-num">06</span><span class="ec-icon">💎</span>
+          <h3 class="ec-title">Lifetime Support</h3>
+          <p class="ec-text">
+            Dedicated after-care, servicing liaisons, and priority access to new
+            arrivals — forever.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials">
+      <div class="t-bg-num">TRUST</div>
+      <div class="test-inner">
+        <div class="test-header">
+          <span class="section-eyebrow">Client Stories</span>
+          <h2 class="section-heading">Voices of <em>Excellence</em></h2>
+        </div>
+        <div class="testimonial-slider">
+          <div class="test-slide active">
+            <blockquote class="test-quote">
+              Acquiring my Rolls-Royce Phantom through Apex was a transcendent
+              experience. They understood exactly what I wanted — and exceeded
+              every expectation effortlessly.
+            </blockquote>
+            <div class="test-author">
+              <div class="test-name">Arjun Mehta</div>
+              <div class="test-role">
+                CEO, Prestige Hospitality Group · Mumbai
+              </div>
+            </div>
+          </div>
+          <div class="test-slide">
+            <blockquote class="test-quote">
+              I've purchased through many luxury dealers worldwide, but the
+              level of personalized attention at Apex is in a class of its own.
+              My Ferrari SF90 was delivered immaculately.
+            </blockquote>
+            <div class="test-author">
+              <div class="test-name">Priya Singhania</div>
+              <div class="test-role">Founder, Luminary Capital · Delhi</div>
+            </div>
+          </div>
+          <div class="test-slide">
+            <blockquote class="test-quote">
+              Finding a factory-spec Lamborghini Revuelto in my exact
+              configuration seemed impossible. Apex sourced it within three
+              weeks. Simply extraordinary service.
+            </blockquote>
+            <div class="test-author">
+              <div class="test-name">Vikram Oberoi</div>
+              <div class="test-role">
+                Managing Director, Oberoi Industries · Bangalore
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="test-dots">
+          <button class="td a" data-s="0"></button
+          ><button class="td" data-s="1"></button
+          ><button class="td" data-s="2"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCIERGE -->
+    <section id="concierge">
+      <div class="con-grid">
+        <div class="con-left">
+          <span class="section-eyebrow">Private Concierge</span>
+          <h2 class="section-heading">
+            Request a<br /><em>Private</em> Showing
+          </h2>
+          <p class="con-desc">
+            Our concierge team is available around the clock to arrange private
+            viewings, factory tours, and bespoke acquisition consultations
+            worldwide.
+          </p>
+          <div class="con-contact-item">
+            <div class="con-icon">☎</div>
+            <div>
+              <div class="con-label">Private Line</div>
+              <div class="con-val">+91 98100 00001</div>
+            </div>
+          </div>
+          <div class="con-contact-item">
+            <div class="con-icon">@</div>
+            <div>
+              <div class="con-label">Email</div>
+              <div class="con-val">concierge@apexmotors.in</div>
+            </div>
+          </div>
+          <div class="con-contact-item">
+            <div class="con-icon">◈</div>
+            <div>
+              <div class="con-label">Showrooms</div>
+              <div class="con-val">Delhi · Mumbai · Bangalore</div>
+            </div>
+          </div>
+        </div>
+        <div class="con-right">
+          <div class="fg-2">
+            <div class="form-group">
+              <label class="fl">First Name</label
+              ><input type="text" class="fi" placeholder="First Name" />
+              <div class="fi-focus-line"></div>
+            </div>
+            <div class="form-group">
+              <label class="fl">Last Name</label
+              ><input type="text" class="fi" placeholder="Last Name" />
+              <div class="fi-focus-line"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="fl">Email Address</label
+            ><input type="email" class="fi" placeholder="your@email.com" />
+            <div class="fi-focus-line"></div>
+          </div>
+          <div class="form-group">
+            <label class="fl">Phone</label
+            ><input type="tel" class="fi" placeholder="+91 XXXXX XXXXX" />
+            <div class="fi-focus-line"></div>
+          </div>
+          <div class="form-group">
+            <label class="fl">Brand of Interest</label>
+            <select class="fi">
+              <option value="">Select Brand</option>
+              <option>Rolls-Royce</option>
+              <option>BMW</option>
+              <option>Mercedes-Benz / Maybach</option>
+              <option>Ferrari</option>
+              <option>Lamborghini</option>
+              <option>Porsche</option>
+              <option>Bentley</option>
+              <option>Aston Martin</option>
+              <option>McLaren</option>
+              <option>Bugatti</option>
+              <option>Other / Multiple</option>
+            </select>
+            <div class="fi-focus-line"></div>
+          </div>
+          <div class="form-group">
+            <label class="fl">Message</label
+            ><input
+              type="text"
+              class="fi"
+              placeholder="Tell us about your requirements..."
+            />
+            <div class="fi-focus-line"></div>
+          </div>
+          <button class="submit-btn" id="submitBtn">
+            <span id="submitTxt">Submit Private Enquiry</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="foot-top">
+        <div>
+          <div class="foot-logo">APEX<em>.</em>MOTORS</div>
+          <p class="foot-tagline">
+            An exclusive destination for the world's most extraordinary
+            automobiles. Curating perfection since 2009.
+          </p>
+        </div>
+        <div>
+          <div class="foot-col-title">Brands</div>
+          <ul class="foot-links">
+            <li><a href="#">Rolls-Royce</a></li>
+            <li><a href="#">BMW</a></li>
+            <li><a href="#">Mercedes-Benz</a></li>
+            <li><a href="#">Ferrari</a></li>
+            <li><a href="#">Lamborghini</a></li>
+            <li><a href="#">Porsche</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-col-title">Services</div>
+          <ul class="foot-links">
+            <li><a href="#">Private Viewing</a></li>
+            <li><a href="#">Bespoke Orders</a></li>
+            <li><a href="#">Finance</a></li>
+            <li><a href="#">Trade-In</a></li>
+            <li><a href="#">Concierge</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="foot-col-title">Company</div>
+          <ul class="foot-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Showrooms</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <p class="foot-copy">© 2025 Apex Motors · All Rights Reserved</p>
+        <p class="foot-copy">Delhi · Mumbai · Bangalore · Dubai</p>
+      </div>
+    </footer>
+
+   <script src="apex.js"></script>
+  </body>
+</html>

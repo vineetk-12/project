@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Luxury | Experience</title>
+<link rel="stylesheet" href="Aura.css" />
+    <link rel="stylesheet" href="responsive.css" />
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  
+
+
+  
+</head>
+<body>
+  <!-- ==================== HTML CONTENT ==================== -->
+  
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Search Panel -->
+  <aside class="search-panel" id="searchPanel">
+    <div class="close-btn search-close" id="closeSearch">CLOSE ✕</div>
+    <div class="search-container" id="searchStagger">
+      <input type="text" class="search-input" placeholder="Search our collections...">
+      <div style="margin-top: 40px">
+        <p style="font-size: 10px; letter-spacing: 3px; color: #999; text-transform: uppercase;">Trending Searches</p>
+        <div style="display: flex; gap: 25px; justify-content: center; margin-top: 20px;">
+          <a href="#" class="stagger-trend">New In</a>
+          <a href="#" class="stagger-trend">Shoes</a>
+          <a href="#" class="stagger-trend">Hoodies</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Contact Panel -->
+  <aside class="side-panel" id="contactPanel">
+    <div class="close-btn" style="align-self: flex-end" id="closeContact">CLOSE ✕</div>
+    <div class="panel-content">
+      <h2 class="stagger-contact" style="font-size: 20px; text-transform: uppercase; margin-bottom: 30px; color: #000;">Contact Us</h2>
+
+      <div class="contact-section stagger-contact">
+        <h4>Call Us</h4>
+        <p style="font-size: 16px; font-weight: 500; color: #000; margin-bottom: 8px;">+1 (877) 482-2430</p>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div class="contact-section stagger-contact">
+        <h4>Live Chat</h4>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div class="contact-section stagger-contact">
+        <h4>Message Us</h4>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div class="contact-section stagger-contact" style="border-top: 1px solid #eee; padding-top: 30px; margin-top: 20px;">
+        <p style="color: #000; font-weight: 500; margin-bottom: 15px; font-size: 13px; text-transform: uppercase;">Do you need further assistance?</p>
+        <a href="#" class="luxury-btn" style="color: #000; border-bottom: 1px solid #000">Get in Contact with Us</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Menu Panel -->
+  <aside class="side-panel" id="menuPanel">
+    <div class="close-btn" id="closeMenu" style="margin-bottom: 30px">
+       CLOSE</div>
+    <div class="panel-content" style="flex: 1; display: flex; flex-direction: column">
+      <h2 class="stagger-menu" style="font-size: 20px; text-transform: uppercase; margin-bottom: 30px; color: #000;">Collections</h2>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 35px;">
+        <li class="stagger-menu"><a href="men.html" class="menu-link" style="font-size: 40px">Men</a></li>
+        <li class="stagger-menu"><a href="women.html" class="menu-link" style="font-size: 40px">Women</a></li>
+        <li class="stagger-menu"><a href="#" id="newArrivalLink" class="menu-link" style="font-size: 40px">New Arrival</a></li>
+        <li class="stagger-menu"><a href="#" class="menu-link" style="font-size: 40px">KIDS</a></li>
+      </ul>
+      <div class="stagger-menu" style="margin-top: auto; padding-top: 30px; border-top: 1px solid #eee;">
+        <p id="mobileContactBtn" class="menu-link" style="font-size: 24px; color: #000">Contact Us</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Shopping Bag Panel -->
+  <aside class="side-panel" id="shoppingBagPanel">
+    <div class="close-btn" id="closeBag" style="align-self: flex-end; margin-bottom: 30px;">CLOSE ✕</div>
+    <div class="shopping-bag-content-wrapper">
+      <h2 style="font-size: 20px; text-transform: uppercase; margin-bottom: 30px; text-align: center;">Shopping Bag</h2>
+      
+      <div id="emptyBagMessage" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <p style="color: #666; margin-bottom: 40px">Your shopping bag is empty</p>
+        <a href="#" class="luxury-btn" style="color: #000;">Continue Shopping</a>
+      </div>
+
+      <div id="cartItemsContainer" style="display: none;"></div>
+      
+      <div id="cartFooter" style="display: none; margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+        <button id="checkoutBtn" class="luxury-btn" style="width: 100%; background: #fff; color: #000; border: 1px solid #000; padding: 15px; font-size: 14px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;">
+          <span>CHECKOUT</span>
+          <span id="cartTotalPrice"></span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-left" id="openContact">Contact Us</div>
+    <div class="logo-small">AURA</div>
+    <div class="nav-right">
+      <div class="nav-icon" id="shoppingBag">
+        <svg viewBox="0 0 24 24">
+          <path d="M17 6h-2V5c0-1.65-1.35-3-3-3S9 3.35 9 5v1H7c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM11 5c0-.55.45-1 1-1s1 .45 1 1v1h-2V5zm7 14H6V8h2v2h2V8h4v2h2V8h2v11z"/>
+        </svg>
+        <span class="cart-badge">0</span>
+      </div>
+      <div class="account-menu-container">
+        <div class="nav-icon account-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <div class="account-dropdown">
+          <a href="#" class="menu-link">Sign In/Log In</a>
+          <a href="#" class="menu-link">My Orders</a>
+          <a href="#" class="menu-link">Account Settings</a>
+          <a href="#" class="menu-link">Address Book</a>
+          <a href="#" class="menu-link">Wallet</a>
+          <a href="#" class="menu-link">Saved Items</a>
+        </div>
+      </div>
+      <div class="nav-icon" id="openSearch">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </div>
+
+      <span class="menu-text" id="openMenu">Menu ☰</span>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="video-container" id="heroVideo">
+      <video autoplay muted loop playsinline>
+        <source src="fashion.mp4" type="video/mp4">
+      </video>
+    </div>
+    <h1 class="logo-large">AURA</h1>
+  </div>
+
+  <!-- Product Section -->
+  <div class="product-section-wrapper">
+    <header class="main-header">
+      <div class="store-branding">
+        <h2>MOST LOVED STYLES</h2>
+        <div class="store-buttons">
+          <button class="luxury-btn store-btn active" id="bestSellerBtn">BEST SELLER</button>
+          <button class="luxury-btn store-btn" id="newInBtn">NEW IN</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="store-container">
+      <!-- Best Sellers Grid -->
+      <div id="bestsellers" class="product-grid active">
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best1.webp" class="base-image">
+            <img src="best1hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BLACK REGULAR FULL SLEEVES T-SHIRT</h3>
+            <p class="product-price">₹1,149</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best5.webp" class="base-image">
+            <img src="best5hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>LIGHT BLUE CAP</h3>
+            <p class="product-price">₹999</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best9.webp" class="base-image">
+            <img src="best9hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>WHITE&BROWN SNEAKER</h3>
+            <p class="product-price">₹1,799</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best2.webp" class="base-image">
+            <img src="best2hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>RED REGULAR FULL SLEEVES T-SHIRT</h3>
+            <p class="product-price">₹1,699</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best7.webp" class="base-image">
+            <img src="best7hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>PLAIN REGULAR SHIRT</h3>
+            <p class="product-price">₹1,000</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best10.webp" class="base-image">
+            <img src="best10hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BLACK HOODIE</h3>
+            <p class="product-price">₹1,299</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best3.webp" class="base-image">
+            <img src="best3hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>REGULAR CHECK SHIRT</h3>
+            <p class="product-price">₹1,300</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best6.webp" class="base-image">
+            <img src="best6hover.jpg" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BLACK TOP</h3>
+            <p class="product-price">₹500</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best4.webp" class="base-image">
+            <img src="best4hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>JACKET</h3>
+            <p class="product-price">₹1,999</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="best8.webp" class="base-image">
+            <img src="best8hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>WOMEN POLO T-SHIRT</h3>
+            <p class="product-price">$110.00</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- New In Grid -->
+      <div id="new-in" class="product-grid">
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new1.webp" class="base-image">
+            <img src="new1hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>PRINT WHITE FULL SLEEVES T-SHIRT</h3>
+            <p class="product-price">₹1,700</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new2.webp" class="base-image">
+            <img src="new2hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>WHITE POLO T-SHIRT</h3>
+            <p class="product-price">₹1,199</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new3.webp" class="base-image">
+            <img src="new3hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>JACKET</h3>
+            <p class="product-price">₹1,699</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new4.webp" class="base-image">
+            <img src="new4hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>PRINT SHIRT</h3>
+            <p class="product-price">₹1,800</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new5.jpg" class="base-image">
+            <img src="new5hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>PRINT HOODIE</h3>
+            <p class="product-price">₹1,900</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new6.webp" class="base-image">
+            <img src="new6hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>ZIPPER FULL SLEEVES T-SHIRT</h3>
+            <p class="product-price">₹800</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new7.webp" class="base-image">
+            <img src="new7hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BLUE&WHITE SNEAKER</h3>
+            <p class="product-price">₹2,000</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new8.webp" class="base-image">
+            <img src="new8hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BOOTS</h3>
+            <p class="product-price">₹1,699</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new9.webp" class="base-image">
+            <img src="new9hover.webp" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>GREEN DRESS</h3>
+            <p class="product-price">₹1,699</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="image-wrapper">
+            <img src="new10.avif" class="base-image">
+            <img src="new10hover.avif" class="hover-image">
+            <a href="#" class="action-overlay">ADD TO CART</a>
+          </div>
+          <div class="product-meta">
+            <h3>BOOTCUT JEANS</h3>
+            <p class="product-price">₹1,800</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination-section">
+        <button class="view-more-action" onclick="viewMore()">View More</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Page Section -->
+  <div class="split-page-container">
+    <div class="page-logo">
+      <h1 id="main-logo">AURA</h1>
+    </div>
+
+    <main class="split-layout">
+      <section class="split-section" data-side="left">
+        <div class="background-video">
+          <video muted loop playsinline preload="auto">
+            <source src="men.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="section-content">
+          <h2>MENS COLLECTION</h2>
+          <a href="men.html" class="shop-button" style="text-decoration: none; color: inherit;">Shop now</a>
+        </div>
+      </section>
+
+      <section class="split-section" data-side="right">
+        <div class="background-video">
+          <video muted loop playsinline preload="auto">
+            <source src="women.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="section-content">
+          <h2>WOMENS COLLECTION</h2>
+          <a href="women.html" class="shop-button" style="text-decoration: none; color: inherit;">Shop now</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="backToTop">
+    <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+  </div>
+   
+
+   <section class="kid">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="kids3.mp4" type="video/mp4">
+        </video>
+        
+        <div class="overlay"></div>
+        
+        <div class="content">
+            <h1>KIDS COLLECTION</h1>
+         
+            <a href="#" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+
+
+     <main class="hero-wrapper">
+        <a href="#women" class="category-card women">
+            <div class="bg-image"></div>
+            <div class="text-content">
+                <h2 class="title">SUMMER COLLECTION</h2>
+                <span class="shop-now">Shop Now</span>
+            </div>
+        </a>
+
+        <a href="#men" class="category-card men">
+            <div class="bg-image"></div>
+            <div class="text-content">
+                <h2 class="title">WINTER COLLECTION</h2>
+                <span class="shop-now">Shop Now</span>
+            </div>
+        </a>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>AURA</h2>
+                <p>Subscribe to our newsletter for exclusive updates.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>Shop</h4>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Men</a>
+                    <a href="#">Women</a>
+                    <a href="#">Accessories</a>
+                </div>
+                <div class="link-column">
+                    <h4>Help</h4>
+                    <a href="#">Customer Service</a>
+                    <a href="#">Returns & Exchanges</a>
+                    <a href="#">Shipping</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="link-column">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Aura Luxury. All rights reserved.</p>
+            <div class="social-icons">
+                <svg viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692 1.002 0 1.865.075 2.116.109v2.191h-1.145z"/></svg>
+            </div>
+        </div>
+    </footer>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="Aura.js"></script>
+ 
+  
+</body>
+</html>
