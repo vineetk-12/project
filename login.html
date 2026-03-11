@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StreamClone – Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <style>
+    :root { --sidebar-w:95px; --sidebar-expand:260px; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html,body{ font-family:"Inter",sans-serif; color:white; background:#0F1014; min-height:100vh; }
+
+    /* ===== BACKGROUND ===== */
+    .bg-scene{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+    .bg-gradient{ position:absolute; inset:0; background:linear-gradient(180deg,#0F001F 0%,#1E000D 15%,#0F1014 30%,#0F1014 100%); }
+    canvas.stars{ position:absolute; inset:0; width:100%; height:100%; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar{ position:fixed; inset:0 auto 0 0; width:var(--sidebar-w); z-index:1000; padding:40px 0; display:flex; flex-direction:column; overflow:hidden; transition:width .45s cubic-bezier(.4,0,.2,1); background:linear-gradient(to right,rgba(3,11,23,.65) 0%,rgba(3,11,23,.35) 45%,rgba(3,11,23,.15) 70%,transparent 100%); }
+    .sidebar-overlay{ position:absolute; inset:0; background:linear-gradient(to right,rgba(3,11,23,.98) 0%,rgba(3,11,23,.95) 65%,rgba(3,11,23,.4) 85%,transparent 100%); opacity:0; transition:opacity .4s ease; z-index:-1; }
+    .sidebar:hover{ width:var(--sidebar-expand); }
+    .sidebar:hover .sidebar-overlay{ opacity:1; }
+    .logo-container{ padding:0 22px 50px; }
+    .logo-container img{ width:50px; }
+    .nav-list{ list-style:none; margin:auto 0; display:flex; flex-direction:column; gap:8px; }
+    .nav-item{ display:flex; align-items:center; padding:14px 35px; color:rgba(255,255,255,.65); text-decoration:none; cursor:pointer; transition:.3s ease; white-space:nowrap; opacity:.8; }
+    .nav-item i{ font-size:24px; min-width:30px; transition:transform .3s ease; }
+    .nav-item span{ margin-left:24px; font-size:17px; font-weight:500; opacity:0; transform:translateX(-18px); transition:.35s ease; pointer-events:none; }
+    .sidebar:hover .nav-item span{ opacity:1; transform:translateX(0); }
+    .nav-item:hover,.nav-item.active{ color:white; }
+    .nav-item:hover i{ transform:scale(1.15); }
+    .sidebar:hover .nav-item{ opacity:1; }
+
+    /* ===== MOBILE TOP BAR ===== */
+    .mobile-topbar{ display:none; position:fixed; top:0; left:0; right:0; z-index:1200; padding:14px 20px; align-items:center; justify-content:space-between; background:rgba(10,12,20,.97); border-bottom:1px solid rgba(255,255,255,.06); }
+    .mobile-topbar img{ width:40px; display:block; }
+    .mobile-topbar-icons{ display:flex; gap:18px; align-items:center; }
+    .mobile-topbar-icons a{ color:rgba(255,255,255,.85); font-size:24px; text-decoration:none; }
+
+    /* ===== MOBILE BOTTOM NAV ===== */
+    .mobile-bottomnav{ display:none; position:fixed; bottom:0; left:0; right:0; z-index:1200; background:rgba(6,10,20,.96); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-top:1px solid rgba(255,255,255,.06); padding:0 0 env(safe-area-inset-bottom,0px); flex-direction:row; justify-content:space-around; align-items:stretch; height:64px; }
+    .mobile-nav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; flex:1; color:rgba(255,255,255,.45); text-decoration:none; font-size:10px; font-weight:500; letter-spacing:.2px; transition:color .2s; padding:8px 6px 6px; }
+    .mobile-nav-item i{ font-size:23px; line-height:1; }
+    .mobile-nav-item.active{ color:#fff; }
+    .mobile-nav-avatar{ width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#1f80e0,#9b27af); display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; position:relative; }
+    .mobile-nav-avatar::after{ content:''; position:absolute; bottom:-1px; right:-1px; width:9px; height:9px; border-radius:50%; background:#e63462; border:1.5px solid rgba(6,10,20,.96); }
+
+    /* ===== MOBILE PILL NAV ===== */
+    .mobile-pill-nav{ display:none; position:fixed; bottom:74px; left:50%; transform:translateX(-50%) translateY(20px); z-index:1199; background:rgba(30,32,48,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.10); border-radius:40px; padding:6px 4px; flex-direction:row; align-items:center; gap:0; box-shadow:0 8px 32px rgba(0,0,0,0.55); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.3s ease,transform 0.3s ease; }
+    .mobile-pill-nav.pill-visible{ opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+    .pill-item{ display:flex; align-items:center; justify-content:center; padding:5px 13px; border-radius:30px; color:rgba(255,255,255,0.75); font-size:12px; font-weight:600; text-decoration:none; transition:background 0.2s,color 0.2s; cursor:pointer; letter-spacing:0.1px; }
+    .pill-item:hover{ color:#fff; }
+    .pill-expand{ display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.10); color:rgba(255,255,255,0.7); font-size:13px; margin-left:2px; text-decoration:none; transition:background 0.2s; border:none; flex-shrink:0; cursor:pointer; }
+    .pill-expand:hover{ background:rgba(255,255,255,0.2); color:#fff; }
+
+    /* ===== HELP BTN ===== */
+    .help-btn{ position:fixed; top:55px; right:70px; z-index:1001; display:flex; align-items:center; gap:8px; padding:15px 40px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:8px; color:white; font-family:"Inter",sans-serif; font-size:18px; font-weight:500; cursor:pointer; backdrop-filter:blur(10px); transition:background .2s ease; }
+    .help-btn:hover{ background:rgba(255,255,255,.18); }
+    .help-btn i{ font-size:19px; }
+
+    /* ===== PAGE WRAPPER ===== */
+    .page-content{ margin-left:var(--sidebar-w); position:relative; z-index:10; display:flex; flex-direction:column; min-height:100vh; }
+
+    /* ===== MAIN ===== */
+    .main{ height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; padding:20px; }
+    .illustration{ width:320px; height:auto; margin-bottom:28px; }
+    .illustration img{ width:100%; height:auto; display:block; }
+    .login-title{ font-size:28px; font-weight:700; margin-bottom:10px; letter-spacing:-.3px; }
+    .login-sub{ font-size:15px; color:rgba(255,255,255,.55); margin-bottom:30px; text-align:center; }
+    .login-btn{ width:230px; padding:14px 0; border:none; border-radius:8px; background:linear-gradient(to right,#1288f3 0%,#3d49ad 70%,#5041a6 74%,#7c2f94 78%,#8e288d 82%,#a12085 86%,#ab1b80 90%,#bd1479 95%,#e20369 100%); color:white; font-family:"Inter",sans-serif; font-size:16px; font-weight:700; cursor:pointer; letter-spacing:.2px; transition:opacity .2s ease,transform .15s ease; }
+    .login-btn:hover{ opacity:.92; transform:translateY(-1px); }
+
+    /* ===== MODAL ===== */
+    .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:3000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s ease; }
+    .modal-overlay.active{ opacity:1; pointer-events:all; }
+
+    .modal{ background:#1c1e2e; border-radius:16px; padding:38px 42px 34px; width:760px; max-width:94vw; position:relative; transform:translateY(24px); transition:transform .25s ease; }
+    .modal-overlay.active .modal{ transform:translateY(0); }
+
+    .modal-close{ position:absolute; top:14px; right:16px; background:none; border:none; color:rgba(255,255,255,.6); font-size:28px; cursor:pointer; display:flex; align-items:center; transition:color .2s; }
+    .modal-close:hover{ color:white; }
+
+    .modal-title{ font-size:22px; font-weight:700; text-align:center; margin-bottom:6px; }
+    .modal-sub{ font-size:14px; color:rgba(255,255,255,.45); text-align:center; margin-bottom:34px; }
+
+    .modal-body{ display:flex; }
+
+    .modal-left{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-right:10px; }
+    .qr-box{ background:white; border-radius:12px; padding:14px; margin-bottom:18px; display:inline-flex; }
+    .qr-title{ font-size:15px; font-weight:700; margin-bottom:8px; }
+    .qr-sub{ font-size:13px; color:rgba(255,255,255,.45); max-width:210px; line-height:1.55; }
+
+    .modal-divider{ display:flex; flex-direction:column; align-items:center; gap:12px; padding:0 30px; color:rgba(255,255,255,.35); font-size:13px; font-weight:600; flex-shrink:0; justify-content:center; }
+    .divider-line{ width:1px; height:90px; background:rgba(255,255,255,.12); }
+
+    .modal-right{ flex:1; display:flex; flex-direction:column; gap:16px; padding-left:10px; }
+
+    .phone-input-wrap{ display:flex; border:1.5px solid rgba(255,255,255,.25); border-radius:8px; overflow:visible; position:relative; transition:border-color .2s; }
+    .phone-input-wrap:focus-within{ border-color:#1a8ef0; }
+    .country-code{ padding:0 16px; display:flex; align-items:center; background:rgba(255,255,255,.05); border-right:1px solid rgba(255,255,255,.12); font-size:15px; font-weight:600; color:white; white-space:nowrap; min-height:52px; border-radius:7px 0 0 7px; }
+    .phone-field{ flex:1; position:relative; height:52px; }
+    .phone-field input{ width:100%; height:100%; background:transparent; border:none; outline:none; color:white; font-size:15px; font-family:"Inter",sans-serif; padding:0 14px; }
+    .phone-field label{ position:absolute; top:50%; left:10px; transform:translateY(-50%); font-size:14px; color:rgba(255,255,255,.4); background:#1c1e2e; padding:0 6px; pointer-events:none; transition:top .15s ease,font-size .15s ease,color .15s ease; }
+    .phone-field input:focus ~ label,
+    .phone-field input:not(:placeholder-shown) ~ label{ top:0; font-size:11px; color:#1a8ef0; }
+
+    .terms-text{ font-size:12.5px; color:rgba(255,255,255,.4); line-height:1.65; }
+    .terms-text a{ color:white; font-weight:700; text-decoration:none; }
+
+    .continue-btn{ width:100%; padding:13px 0; border:none; border-radius:8px; background:linear-gradient(to right,#1288f3 0%,#3d49ad 70%,#5041a6 74%,#7c2f94 78%,#8e288d 82%,#a12085 86%,#ab1b80 90%,#bd1479 95%,#e20369 100%); color:white; font-family:"Inter",sans-serif; font-size:15px; font-weight:700; cursor:pointer; display:block; margin-top:auto; opacity:0; pointer-events:none; transition:opacity .2s; }
+    .continue-btn.visible{ opacity:1; pointer-events:auto; }
+    .continue-btn:hover{ opacity:.88; }
+
+    .trouble-text{ font-size:13px; color:rgba(255,255,255,.4); text-align:center; }
+    .trouble-text a{ color:#1a8ef0; font-weight:600; text-decoration:none; }
+    .trouble-text a:hover{ text-decoration:underline; }
+
+    /* ===== FOOTER ===== */
+    .site-footer{ background:#0d0f13; padding:48px 80px 28px; border-top:1px solid rgba(255,255,255,.07); position:relative; z-index:10; }
+    .footer-top{ display:flex; justify-content:space-between; padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .footer-col{ flex:1; }
+    .footer-col--connect{ flex:0 0 auto; min-width:220px; display:flex; flex-direction:column; align-items:flex-start; }
+    .footer-heading{ font-size:14px; font-weight:600; color:#fff; margin-bottom:20px; letter-spacing:.3px; }
+    .footer-links{ list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .footer-links a{ font-size:13px; color:#8a9bb5; text-decoration:none; transition:color .2s; }
+    .footer-links a:hover{ color:#fff; }
+    .lang-option{ display:flex; align-items:center; gap:8px; }
+    .lang-check{ color:#8a9bb5; font-size:14px; display:flex; align-items:center; }
+    .social-icons{ display:flex; gap:16px; margin-bottom:20px; }
+    .social-icon{ display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,.2); color:#fff; font-size:18px; text-decoration:none; transition:border-color .2s,background .2s; }
+    .social-icon:hover{ border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.08); }
+    .store-badges{ display:flex; gap:12px; flex-wrap:wrap; }
+    .store-badge img{ height:36px; width:auto; display:block; border-radius:6px; }
+    .footer-bottom{ padding-top:20px; display:flex; align-items:center; justify-content:space-between; }
+    .footer-bottom-left{ display:flex; flex-direction:column; gap:8px; }
+    .copyright{ font-size:12px; color:#8a9bb5; }
+    .footer-legal-links{ display:flex; gap:16px; }
+    .footer-legal-links a{ font-size:12px; color:#8a9bb5; text-decoration:none; transition:color .2s; }
+    .footer-legal-links a:hover{ color:#fff; }
+
+    /* ================================================
+       TABLET (≤1024px) — keep desktop sidebar
+       ================================================ */
+    @media(max-width:1024px){
+      :root{ --sidebar-w:70px; --sidebar-expand:220px; }
+      .sidebar{ display:flex!important; }
+      .mobile-topbar{ display:none!important; }
+      .mobile-bottomnav{ display:none!important; }
+      .help-btn{ top:20px; right:20px; padding:10px 20px; font-size:15px; }
+      .illustration{ width:240px; }
+      .login-title{ font-size:24px; }
+      .site-footer{ padding:36px 40px 24px; }
+      .footer-top{ flex-wrap:wrap; gap:32px; }
+      .footer-col{ flex:0 0 calc(50% - 16px); }
+      .footer-col--connect{ flex:0 0 100%; flex-direction:row; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+      .modal{ padding:30px 28px 26px; }
+    }
+
+    /* ================================================
+       MOBILE (≤768px)
+       ================================================ */
+    @media(max-width:768px){
+      .sidebar{ display:none!important; }
+      .mobile-topbar{ display:flex!important; }
+      .mobile-bottomnav{ display:flex!important; }
+      .mobile-pill-nav{ display:flex!important; }
+      .help-btn{ display:none; }
+
+      .page-content{ margin-left:0; }
+
+      .main{ height:auto; padding:100px 24px 100px; min-height:100svh; justify-content:center; }
+
+      .illustration{ width:220px; margin-bottom:20px; }
+      .login-title{ font-size:22px; text-align:center; }
+      .login-sub{ font-size:14px; max-width:280px; }
+      .login-btn{ width:100%; max-width:320px; }
+
+      /* Modal — phone only on mobile, hide QR + divider */
+      .modal{
+        width:100%;
+        max-width:100%;
+        border-radius:20px 20px 0 0;
+        padding:28px 24px 32px;
+        position:fixed;
+        bottom:0; left:0; right:0;
+        transform:translateY(100%);
+        margin:0;
+        padding-bottom: calc(108px + 20px);
+      }
+      .modal-overlay{ align-items:flex-end; }
+      .modal-overlay.active .modal{ transform:translateY(0); }
+
+      .modal-title{ font-size:18px; margin-bottom:4px; }
+      .modal-sub{ font-size:13px; margin-bottom:24px; }
+
+      /* Hide QR and divider entirely on mobile */
+      .modal-left{ display:none!important; }
+      .modal-divider{ display:none!important; }
+
+      /* Phone section takes full width */
+      .modal-body{ flex-direction:column; }
+      .modal-right{ padding-left:0; gap:14px; width:100%; }
+
+      .country-code{ min-height:48px; font-size:14px; }
+      .phone-field{ height:48px; }
+      .phone-field input{ font-size:14px; }
+
+      .continue-btn{ padding:14px 0; font-size:15px; border-radius:10px; }
+
+      .site-footer{
+        padding:32px 20px 90px;
+        margin-left:0!important;
+      }
+      .footer-top{ flex-direction:column; gap:28px; padding-bottom:28px; }
+      .footer-col{ flex:none; }
+      .footer-col--connect{ min-width:auto; }
+      .footer-bottom{ flex-direction:column; align-items:flex-start; gap:12px; }
+      .footer-legal-links{ flex-wrap:wrap; gap:12px; }
+    }
+
+    /* ================================================
+       SMALL MOBILE (≤480px)
+       ================================================ */
+    @media(max-width:480px){
+      .illustration{ width:180px; }
+      .login-title{ font-size:20px; }
+      .login-sub{ font-size:13px; }
+      .modal{ padding:24px 18px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-scene">
+    <div class="bg-gradient"></div>
+    <canvas class="stars" id="starsCanvas"></canvas>
+  </div>
+
+  <!-- Help btn (desktop only) -->
+  <button class="help-btn">
+    <i class="bx bx-help-circle"></i>
+    Help &amp; Support
+  </button>
+
+  <!-- DESKTOP SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-overlay"></div>
+    <div class="logo-container"><img src="logo.png" /></div>
+    <div class="nav-list">
+      <a href="home.html" class="nav-item"><i class="bx bxs-home"></i><span>Home</span></a>
+      <a href="search.html" class="nav-item"><i class="bx bx-search"></i><span>Search</span></a>
+      <a class="nav-item"><i class="bx bx-tv"></i><span>TV</span></a>
+      <a class="nav-item"><i class="bx bx-movie-play"></i><span>Movies</span></a>
+      <a class="nav-item"><i class="bx bx-football"></i><span>Sports</span></a>
+      <a class="nav-item"><i class="bx bx-category"></i><span>Categories</span></a>
+      <a href="login.html" class="nav-item active"><i class="bx bxs-user-circle"></i><span>My Space</span></a>
+    </div>
+  </nav>
+
+  <!-- MOBILE TOP BAR -->
+  <header class="mobile-topbar">
+    <img src="logo.png" alt="Logo" />
+    <div class="mobile-topbar-icons">
+      <a href="#"><i class='bx bx-cast'></i></a>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <div class="page-content">
+    <div class="main">
+      <div class="illustration">
+        <img src="login.webp" alt="Devices illustration" />
+      </div>
+      <h1 class="login-title">Login to JioHotstar</h1>
+      <p class="login-sub">Start watching from where you left off, personalise for kids and more</p>
+      <button class="login-btn" id="loginBtn">Log In</button>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">View Website in</h4>
+          <ul class="footer-links">
+            <li class="lang-option">
+              <span class="lang-check"><i class='bx bx-check'></i></span>
+              <a href="#">English</a>
+            </li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Need Help?</h4>
+          <ul class="footer-links">
+            <li><a href="#">Visit Help Center</a></li>
+            <li><a href="#">Share Feedback</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-col--connect">
+          <h4 class="footer-heading">Connect with Us</h4>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class='bx bxl-facebook'></i></a>
+            <a href="#" class="social-icon"><i class='bx bxl-twitter'></i></a>
+          </div>
+          <div class="store-badges">
+            <a href="#" class="store-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" /></a>
+            <a href="#" class="store-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" /></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">
+          <p class="copyright">© 2026 STAR. All Rights Reserved.</p>
+          <div class="footer-legal-links">
+            <a href="#">Terms Of Use</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MOBILE PILL NAV -->
+  <div class="mobile-pill-nav" id="mobilePill">
+    <a class="pill-item" href="#">TV</a>
+    <a class="pill-item" href="#">Movies</a>
+    <a class="pill-item" href="#">Sports</a>
+    <a href="categories.html" class="pill-expand"><i class='bx bx-chevron-up'></i></a>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-bottomnav">
+    <a href="search.html" class="mobile-nav-item">
+      <i class='bx bx-search'></i><span>Search</span>
+    </a>
+    <a href="home.html" class="mobile-nav-item">
+      <i class='bx bxs-home'></i><span>Home</span>
+    </a>
+    <a href="login.html" class="mobile-nav-item active">
+      <div class="mobile-nav-avatar"><i class='bx bxs-user' style="font-size:14px"></i></div>
+      <span>My Space</span>
+    </a>
+  </nav>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" id="modalClose"><i class="bx bx-x"></i></button>
+      <h2 class="modal-title">Login or sign up to continue</h2>
+      <p class="modal-sub">Scan QR code or enter phone number to login</p>
+      <div class="modal-body">
+
+        <!-- QR (hidden on mobile via CSS) -->
+        <div class="modal-left">
+          <div class="qr-box">
+            <canvas id="qrCanvas" width="176" height="176"></canvas>
+          </div>
+          <p class="qr-title">Use Camera App to Scan QR</p>
+          <p class="qr-sub">Click on the link generated to redirect to StreamClone mobile app</p>
+        </div>
+
+        <!-- Divider (hidden on mobile via CSS) -->
+        <div class="modal-divider">
+          <div class="divider-line"></div>
+          <span>OR</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <!-- Phone input (always visible) -->
+        <div class="modal-right">
+          <div class="phone-input-wrap">
+            <div class="country-code">+91</div>
+            <div class="phone-field">
+              <input type="tel" id="phoneInput" placeholder=" " />
+              <label>Enter mobile number</label>
+            </div>
+          </div>
+          <p class="terms-text">By proceeding you confirm that you are above 18 years of age and agree to the <a href="#">Privacy Policy</a> &amp; <a href="#">Terms of Use.</a></p>
+          <button class="continue-btn" id="continueBtn">Get OTP</button>
+          <p class="trouble-text">Having trouble logging in? <a href="#">Get Help</a></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-show pill on login page (no scroll trigger needed)
+    const mobilePill = document.getElementById('mobilePill');
+    if (mobilePill) {
+      setTimeout(() => mobilePill.classList.add('pill-visible'), 300);
+    }
+
+    // Stars
+    const canvas = document.getElementById('starsCanvas');
+    const ctx = canvas.getContext('2d');
+    function drawStars(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i<50;i++){
+        const x=Math.random()*canvas.width, y=Math.random()*canvas.height*0.2;
+        const r=Math.random()*.9+.2, alpha=Math.random()*.5+.2;
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(255,255,255,${alpha})`; ctx.fill();
+      }
+    }
+    window.addEventListener('resize',drawStars);
+    drawStars();
+
+    // Modal open/close
+    document.getElementById('loginBtn').addEventListener('click',()=>{
+      document.getElementById('modalOverlay').classList.add('active');
+    });
+    document.getElementById('modalClose').addEventListener('click',()=>{
+      document.getElementById('modalOverlay').classList.remove('active');
+    });
+    document.getElementById('modalOverlay').addEventListener('click',(e)=>{
+      if(e.target===document.getElementById('modalOverlay'))
+        document.getElementById('modalOverlay').classList.remove('active');
+    });
+
+    // Phone input
+    const phoneInput = document.getElementById('phoneInput');
+    const continueBtn = document.getElementById('continueBtn');
+    phoneInput.addEventListener('input',()=>{
+      phoneInput.value = phoneInput.value.replace(/\D/g,'').slice(0,10);
+      continueBtn.classList.toggle('visible', phoneInput.value.length===10);
+    });
+
+    // QR draw
+    const qr = document.getElementById('qrCanvas');
+    const qctx = qr.getContext('2d');
+    const size=176, cell=8, cols=size/cell;
+    qctx.fillStyle='white'; qctx.fillRect(0,0,size,size);
+    qctx.fillStyle='#111';
+    function seededRand(i){ const x=Math.sin(i+42)*10000; return x-Math.floor(x); }
+    for(let r=0;r<cols;r++){
+      for(let c=0;c<cols;c++){
+        const inFinder=(r<7&&c<7)||(r<7&&c>=cols-7)||(r>=cols-7&&c<7);
+        if(inFinder){
+          const fr=r<7?r:r-(cols-7), fc=c<7?c:c-(cols-7);
+          if(fr===0||fr===6||fc===0||fc===6||fr>=2&&fr<=4&&fc>=2&&fc<=4)
+            qctx.fillRect(c*cell,r*cell,cell,cell);
+        } else if(seededRand(r*cols+c)>0.5){
+          qctx.fillRect(c*cell,r*cell,cell,cell);
+        }
+      }
+    }
+    const cx=size/2, cy=size/2;
+    qctx.fillStyle='white'; qctx.fillRect(cx-14,cy-14,28,28);
+    qctx.fillStyle='#111'; qctx.font='bold 18px sans-serif';
+    qctx.textAlign='center'; qctx.textBaseline='middle';
+    qctx.fillText('✦',cx,cy);
+  </script>
+</body>
+</html>
