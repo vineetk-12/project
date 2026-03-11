@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamClone – Categories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0F1014;
+        --sidebar-w: 95px;
+        --sidebar-expand: 260px;
+        --card-radius: 8px;
+        --section-gap: 44px;
+        --grid-gap: 10px;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        background-color: var(--bg);
+        background-image: radial-gradient(ellipse at 62% -8%, rgba(180,18,48,0.55) 0%, rgba(110,8,70,0.28) 35%, transparent 60%);
+        font-family: "Inter", sans-serif;
+        color: white;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      /* ========== SIDEBAR ========== */
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: var(--sidebar-w);
+        z-index: 1000;
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+        background: linear-gradient(to right, rgba(3,11,23,0.65) 0%, rgba(3,11,23,0.35) 45%, rgba(3,11,23,0.15) 70%, transparent 100%);
+      }
+      .sidebar-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to right, rgba(3,11,23,0.98) 0%, rgba(3,11,23,0.95) 65%, rgba(3,11,23,0.4) 85%, transparent 100%);
+        opacity: 0; transition: opacity 0.4s ease; z-index: -1;
+      }
+      .sidebar:hover { width: var(--sidebar-expand); }
+      .sidebar:hover .sidebar-overlay { opacity: 1; }
+
+      .logo-container { padding: 0 22px 50px; }
+      .logo-container img { width: 50px; }
+
+      .nav-list { list-style: none; margin: auto 0; display: flex; flex-direction: column; gap: 8px; }
+      .nav-item {
+        display: flex; align-items: center; padding: 14px 35px;
+        color: rgba(255,255,255,0.65); text-decoration: none;
+        cursor: pointer; transition: 0.3s ease; white-space: nowrap; opacity: 0.8;
+      }
+      .nav-item i { font-size: 24px; min-width: 30px; transition: transform 0.3s ease; }
+      .nav-item span {
+        margin-left: 24px; font-size: 17px; font-weight: 500;
+        opacity: 0; transform: translateX(-18px); transition: 0.35s ease; pointer-events: none;
+      }
+      .sidebar:hover .nav-item span { opacity: 1; transform: translateX(0); }
+      .nav-item:hover, .nav-item.active { color: white; opacity: 1; }
+      .nav-item:hover i { transform: scale(1.15); }
+      .sidebar:hover .nav-item { opacity: 1; }
+
+      /* ========== MOBILE TOP BAR ========== */
+      .mobile-topbar {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1200;
+        padding: 14px 20px;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(to bottom, rgba(3,11,23,0.95) 0%, rgba(3,11,23,0.5) 70%, transparent 100%);
+      }
+      .mobile-topbar img { width: 40px; display: block; }
+      .mobile-topbar-icons { display: flex; gap: 18px; align-items: center; }
+      .mobile-topbar-icons a { color: rgba(255,255,255,0.85); font-size: 24px; text-decoration: none; }
+
+      /* ========== FLOATING PILL NAV ========== */
+      .mobile-pill-nav {
+        display: none;
+        position: fixed;
+        bottom: 74px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        z-index: 1199;
+        background: rgba(30,32,48,0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 40px;
+        padding: 6px 4px;
+        flex-direction: row;
+        align-items: center;
+        gap: 0;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      .mobile-pill-nav.pill-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+      .pill-item {
+        display: flex; align-items: center; justify-content: center;
+        padding: 5px 13px; border-radius: 30px;
+        color: rgba(255,255,255,0.75);
+        font-size: 12px; font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer; letter-spacing: 0.1px;
+      }
+      .pill-item:hover { color: #fff; }
+      .pill-expand {
+        display: flex; align-items: center; justify-content: center;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: rgba(255,255,255,0.10);
+        color: rgba(255,255,255,0.7);
+        font-size: 13px; margin-left: 2px;
+        text-decoration: none;
+        transition: background 0.2s;
+        border: none; flex-shrink: 0; cursor: pointer;
+      }
+      .pill-expand:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+      /* ========== MOBILE BOTTOM NAV ========== */
+      .mobile-bottomnav {
+        display: none;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        z-index: 1200;
+        background: rgba(6,10,20,0.96);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-top: 1px solid rgba(255,255,255,0.06);
+        padding: 0 0 env(safe-area-inset-bottom, 0px);
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: stretch;
+        height: 64px;
+      }
+      .mobile-nav-item {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 4px; flex: 1;
+        color: rgba(255,255,255,0.45);
+        text-decoration: none;
+        font-size: 10px; font-weight: 500;
+        letter-spacing: 0.2px;
+        transition: color 0.2s;
+        padding: 8px 6px 6px;
+      }
+      .mobile-nav-item i { font-size: 23px; line-height: 1; }
+      .mobile-nav-item.active { color: #ffffff; }
+      .mobile-nav-avatar {
+        width: 26px; height: 26px; border-radius: 50%;
+        background: linear-gradient(135deg, #1f80e0, #9b27af);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; color: white; position: relative;
+      }
+      .mobile-nav-avatar::after {
+        content: '';
+        position: absolute; bottom: -1px; right: -1px;
+        width: 9px; height: 9px; border-radius: 50%;
+        background: #e63462;
+        border: 1.5px solid rgba(6,10,20,0.96);
+      }
+
+      /* ========== MAIN ========== */
+      .main-content { margin-left: var(--sidebar-w); padding: 100px 30px 60px 10px; }
+
+      /* ========== SECTION ========== */
+      .section { margin-bottom: var(--section-gap); }
+      .section-title {
+        font-size: 18px; font-weight: 600;
+        color: rgba(255,255,255,0.92); margin-bottom: 16px; letter-spacing: 0.01em;
+      }
+
+      /* ========== BROWSE ========== */
+      .browse-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: var(--grid-gap); }
+      .browse-card {
+        position: relative; height: 155px; border-radius: var(--card-radius);
+        overflow: hidden; cursor: pointer; transition: transform 0.28s ease, filter 0.28s ease;
+      }
+      .browse-card:hover { transform: scale(1.03) translateY(-6px); filter: brightness(1.12); }
+      .browse-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+      /* ========== STUDIOS ========== */
+      .studio-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: var(--grid-gap); }
+      .studio-card {
+        background: #181b28; border-radius: var(--card-radius); height: 128px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: transform 0.28s ease, background 0.28s ease;
+        overflow: hidden;
+      }
+      .studio-card:hover { background: #202436; transform: scale(1.03) translateY(-6px); }
+      .studio-logo { width: 100%; height: 100%; object-fit: cover; }
+
+      /* ========== CAROUSEL ========== */
+      .carousel-section { position: relative; }
+      .carousel-track {
+        display: flex; gap: var(--grid-gap);
+        overflow-x: auto; scroll-behavior: smooth;
+        scrollbar-width: none; -ms-overflow-style: none;
+        padding: 4px 2px;
+      }
+      .carousel-track::-webkit-scrollbar { display: none; }
+      .arrow-btn {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        z-index: 20; width: 52px; height: calc(100% - 8px);
+        border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.2s ease; color: white;
+      }
+      .arrow-btn.left {
+        left: 0;
+        background: linear-gradient(to right, rgba(5,5,18,0.80) 0%, transparent 100%);
+        border-radius: var(--card-radius) 0 0 var(--card-radius);
+      }
+      .arrow-btn.right {
+        right: 0;
+        background: linear-gradient(to left, rgba(5,5,18,0.80) 0%, transparent 100%);
+        border-radius: 0 var(--card-radius) var(--card-radius) 0;
+      }
+      .carousel-section:hover .arrow-btn { opacity: 1; }
+      .arrow-btn[disabled] { opacity: 0 !important; cursor: default; pointer-events: none; }
+      .arrow-btn i { font-size: 38px; filter: drop-shadow(0 1px 5px rgba(0,0,0,0.9)); transition: transform 0.15s ease; }
+      .arrow-btn:hover i { transform: scale(1.2); }
+
+      /* ========== LANGUAGE CARDS ========== */
+      .lang-card {
+        flex: 0 0 calc((100% - 4 * var(--grid-gap)) / 5);
+        position: relative; height: 140px;
+        border-radius: var(--card-radius); overflow: hidden;
+        cursor: pointer; transition: transform 0.28s ease;
+      }
+      .lang-card:hover { transform: scale(1.03) translateY(-6px); }
+      .lang-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+      /* ========== CHANNEL CARDS ========== */
+      .channel-card {
+        flex: 0 0 calc((100% - 5 * var(--grid-gap)) / 6);
+        background: #181b28; border-radius: var(--card-radius); height: 128px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: transform 0.28s ease, background 0.28s ease;
+        overflow: hidden;
+      }
+      .channel-card:hover { background: #202436; transform: scale(1.04) translateY(-6px); }
+      .channel-logo { width: 100%; height: 100%; object-fit: cover; }
+
+      /* ========== FOOTER ========== */
+      .site-footer {
+        background: #0d0f13;
+        padding: 48px 80px 28px;
+        margin-left: var(--sidebar-w);
+        border-top: 1px solid rgba(255,255,255,0.07);
+        position: relative; z-index: 20;
+      }
+      .footer-top {
+        display: flex; gap: 0;
+        justify-content: space-between;
+        padding-bottom: 36px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .footer-col { flex: 1; }
+      .footer-col--connect {
+        flex: 0 0 auto; min-width: 220px;
+        display: flex; flex-direction: column; align-items: flex-start;
+      }
+      .footer-heading { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 0.3px; }
+      .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+      .footer-links a { font-size: 13px; color: #8a9bb5; text-decoration: none; transition: color 0.2s; }
+      .footer-links a:hover { color: #fff; }
+      .lang-option { display: flex; align-items: center; gap: 8px; }
+      .lang-check { color: #8a9bb5; font-size: 14px; display: flex; align-items: center; }
+      .social-icons { display: flex; gap: 16px; margin-bottom: 20px; }
+      .social-icon {
+        display: flex; align-items: center; justify-content: center;
+        width: 36px; height: 36px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff; font-size: 18px; text-decoration: none;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .social-icon:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.08); }
+      .store-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+      .store-badge img { height: 36px; width: auto; display: block; border-radius: 6px; }
+      .footer-bottom { padding-top: 20px; display: flex; align-items: center; justify-content: space-between; }
+      .footer-bottom-left { display: flex; flex-direction: column; gap: 8px; }
+      .copyright { font-size: 12px; color: #8a9bb5; }
+      .footer-legal-links { display: flex; gap: 16px; }
+      .footer-legal-links a { font-size: 12px; color: #8a9bb5; text-decoration: none; transition: color 0.2s; }
+      .footer-legal-links a:hover { color: #fff; }
+
+
+
+      /* ========== TABLET (≤ 1024px) — same as desktop ========== */
+      @media (max-width: 1024px) {
+        .sidebar { display: flex !important; }
+        .mobile-topbar { display: none !important; }
+        .mobile-bottomnav { display: none !important; }
+        .mobile-pill-nav { display: none !important; }
+      }
+      @media (max-width: 768px) {
+        .sidebar { display: none !important; }
+        .mobile-topbar { display: flex !important; }
+        .mobile-bottomnav { display: flex !important; }
+        .mobile-pill-nav { display: flex !important; }
+
+        .main-content { margin-left: 0; padding: 72px 12px calc(64px + 20px); }
+        .section { margin-bottom: 28px; }
+        .section-title { font-size: 16px; margin-bottom: 10px; }
+
+        /* All card rows — single horizontal scroll line */
+        .browse-grid {
+          display: flex; flex-wrap: nowrap;
+          overflow-x: auto; gap: 8px;
+          padding: 4px 2px;
+          scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .browse-grid::-webkit-scrollbar { display: none; }
+        .browse-card { flex: 0 0 34vw; height: 78px; }
+
+        .studio-grid {
+          display: flex; flex-wrap: nowrap;
+          overflow-x: auto; gap: 8px;
+          padding: 4px 2px;
+          scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .studio-grid::-webkit-scrollbar { display: none; }
+        .studio-card { flex: 0 0 28vw; height: 66px; }
+
+        .arrow-btn { display: none !important; }
+        .lang-card    { flex: 0 0 34vw; height: 88px; }
+        .channel-card { flex: 0 0 28vw; height: 66px; }
+
+        .site-footer { margin-left: 0 !important; padding: 32px 16px calc(64px + 20px); }
+        .footer-top { flex-direction: column; gap: 28px; padding-bottom: 28px; }
+        .footer-col, .footer-col--connect { flex: none; width: 100%; min-width: unset; }
+        .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .footer-legal-links { flex-wrap: wrap; gap: 12px; }
+      }
+
+      /* ========== SMALL MOBILE (≤ 480px) ========== */
+      @media (max-width: 480px) {
+        .browse-card  { flex: 0 0 38vw; height: 70px; }
+        .studio-card  { flex: 0 0 32vw; height: 60px; }
+        .lang-card    { flex: 0 0 38vw; height: 80px; }
+        .channel-card { flex: 0 0 32vw; height: 60px; }
+        .section-title { font-size: 15px; }
+      }
+    </style>
+</head>
+<body>
+
+  <!-- DESKTOP SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-overlay"></div>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" />
+    </div>
+    <ul class="nav-list">
+      <a class="nav-item" href="home.html"><i class="bx bxs-home"></i><span>Home</span></a>
+      <a class="nav-item" href="search.html"><i class="bx bx-search"></i><span>Search</span></a>
+      <a class="nav-item"><i class="bx bx-tv"></i><span>TV</span></a>
+      <a class="nav-item"><i class="bx bx-movie-play"></i><span>Movies</span></a>
+      <a class="nav-item"><i class="bx bx-football"></i><span>Sports</span></a>
+      <a class="nav-item active"><i class="bx bx-category"></i><span>Categories</span></a>
+      <a class="nav-item" href="login.html"><i class="bx bxs-user-circle"></i><span>My Space</span></a>
+    </ul>
+  </nav>
+
+  <!-- MOBILE TOP BAR -->
+  <header class="mobile-topbar">
+    <img src="logo.png" alt="Logo" />
+    <div class="mobile-topbar-icons">
+      <a href="#"><i class='bx bx-cast'></i></a>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- BROWSE -->
+    <section class="section">
+      <h2 class="section-title">Browse</h2>
+      <div class="browse-grid">
+        <div class="browse-card"><img src="browse1.webp" alt="Sparks" /></div>
+        <div class="browse-card"><img src="browse2.webp" alt="News" /></div>
+        <div class="browse-card"><img src="browse3.webp" alt="TV" /></div>
+        <div class="browse-card"><img src="browse4.webp" alt="Movies" /></div>
+        <div class="browse-card"><img src="browse5.webp" alt="Sports" /></div>
+      </div>
+    </section>
+
+    <!-- STUDIOS -->
+    <section class="section">
+      <h2 class="section-title">Studios</h2>
+      <div class="studio-grid">
+        <div class="studio-card"><img class="studio-logo" src="studios1.avif" alt="Hotstar Specials" /></div>
+        <div class="studio-card"><img class="studio-logo" src="studios2.avif" alt="Disney+" /></div>
+        <div class="studio-card"><img class="studio-logo" src="studios3.avif" alt="HBO" /></div>
+        <div class="studio-card"><img class="studio-logo" src="studios4.avif" alt="Peacock" /></div>
+        <div class="studio-card"><img class="studio-logo" src="studios5.avif" alt="Paramount+" /></div>
+      </div>
+    </section>
+
+    <!-- POPULAR LANGUAGES -->
+    <section class="section">
+      <h2 class="section-title">Popular Languages</h2>
+      <div class="carousel-section">
+        <button class="arrow-btn left" id="lang-prev" onclick="slide('lang-track','lang-prev','lang-next',-1)" disabled><i class="bx bx-chevron-left"></i></button>
+        <button class="arrow-btn right" id="lang-next" onclick="slide('lang-track','lang-prev','lang-next',1)"><i class="bx bx-chevron-right"></i></button>
+        <div class="carousel-track" id="lang-track" onscroll="sync('lang-track','lang-prev','lang-next')">
+          <div class="lang-card" style="background:#1c3568"><img src="language1.webp" alt="Hindi"/></div>
+          <div class="lang-card" style="background:#7a3d1a"><img src="language2.webp" alt="English"/></div>
+          <div class="lang-card" style="background:#6b3010"><img src="language3.webp" alt="Tamil"/></div>
+          <div class="lang-card" style="background:#252c3a"><img src="language4.webp" alt="Telugu"/></div>
+          <div class="lang-card" style="background:#3d2555"><img src="language5.webp" alt="Malayalam"/></div>
+          <div class="lang-card" style="background:#7a1620"><img src="language6.webp" alt="Bengali"/></div>
+          <div class="lang-card" style="background:#1a4020"><img src="language7.webp" alt="Kannada"/></div>
+          <div class="lang-card" style="background:#3a2010"><img src="language8.webp" alt="Marathi"/></div>
+          <div class="lang-card" style="background:#102040"><img src="language9.webp" alt="Punjabi"/></div>
+          <div class="lang-card" style="background:#301530"><img src="language10.avif" alt="Gujarati"/></div>
+          <div class="lang-card" style="background:#301530"><img src="language11.webp" alt=""/></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPULAR CHANNELS -->
+    <section class="section">
+      <h2 class="section-title">Popular Channels</h2>
+      <div class="carousel-section">
+        <button class="arrow-btn left" id="ch-prev" onclick="slide('ch-track','ch-prev','ch-next',-1)" disabled><i class="bx bx-chevron-left"></i></button>
+        <button class="arrow-btn right" id="ch-next" onclick="slide('ch-track','ch-prev','ch-next',1)"><i class="bx bx-chevron-right"></i></button>
+        <div class="carousel-track" id="ch-track" onscroll="sync('ch-track','ch-prev','ch-next')">
+          <div class="channel-card"><img class="channel-logo" src="channel1.webp" alt="Star Plus"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel2.avif" alt="Colors"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel3.webp" alt="Sony LIV"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel4.webp" alt="Zee TV"/></div>
+          <div class="channel-card"><img class="channel-logo" src="chaneel5.webp" alt="Star Gold"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel6.webp" alt="Sun TV"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel7.webp" alt="National Geographic"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel8.avif" alt="Star Vijay"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel9.webp" alt="ZEE5"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel10.webp" alt="Discovery"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel11.avif" alt="Star Sports"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel12.avif" alt="News18"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel13.avif" alt="Discovery"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel14.avif" alt="Star Sports"/></div>
+          <div class="channel-card"><img class="channel-logo" src="channel15.avif" alt="News18"/></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPULAR GENRES -->
+    <section class="section">
+      <h2 class="section-title">Popular Genres</h2>
+      <div class="carousel-section">
+        <button class="arrow-btn left" id="genre-prev" onclick="slide('genre-track','genre-prev','genre-next',-1)" disabled><i class="bx bx-chevron-left"></i></button>
+        <button class="arrow-btn right" id="genre-next" onclick="slide('genre-track','genre-prev','genre-next',1)"><i class="bx bx-chevron-right"></i></button>
+        <div class="carousel-track" id="genre-track" onscroll="sync('genre-track','genre-prev','genre-next')">
+          <div class="lang-card"><img src="genres1.avif" alt="" /></div>
+          <div class="lang-card"><img src="genres2.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres3.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres4.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres5.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres6.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres7.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres8.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres9.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres10.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres11.webp" alt="" /></div>
+          <div class="lang-card"><img src="genres12.webp" alt="Wildlife" /></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPULAR SPORTS -->
+    <section class="section">
+      <h2 class="section-title">Popular Sports</h2>
+      <div class="carousel-section">
+        <button class="arrow-btn left" id="sport-prev" onclick="slide('sport-track','sport-prev','sport-next',-1)" disabled><i class="bx bx-chevron-left"></i></button>
+        <button class="arrow-btn right" id="sport-next" onclick="slide('sport-track','sport-prev','sport-next',1)"><i class="bx bx-chevron-right"></i></button>
+        <div class="carousel-track" id="sport-track" onscroll="sync('sport-track','sport-prev','sport-next')">
+          <div class="lang-card"><img src="sport1.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport2.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport3.avif" alt="" /></div>
+          <div class="lang-card"><img src="sport4.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport5.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport6.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport7.webp" alt="" /></div>
+          <div class="lang-card"><img src="sport8.avif" alt="" /></div>
+          <div class="lang-card"><img src="sport9.avif" alt="" /></div>
+          <div class="lang-card"><img src="sport10.webp" alt="" /></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">View Website in</h4>
+        <ul class="footer-links">
+          <li class="lang-option">
+            <span class="lang-check"><i class='bx bx-check'></i></span>
+            <a href="#">English</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Need Help?</h4>
+        <ul class="footer-links">
+          <li><a href="#">Visit Help Center</a></li>
+          <li><a href="#">Share Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-col footer-col--connect">
+        <h4 class="footer-heading">Connect with Us</h4>
+        <div class="social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class='bx bxl-facebook'></i></a>
+          <a href="#" class="social-icon" aria-label="X / Twitter"><i class='bx bxl-twitter'></i></a>
+        </div>
+        <div class="store-badges">
+          <a href="#" class="store-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" />
+          </a>
+          <a href="#" class="store-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="Download on the App Store" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <p class="copyright">© 2026 STAR. All Rights Reserved.</p>
+        <div class="footer-legal-links">
+          <a href="#">Terms Of Use</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING PILL NAV (mobile) — appears after scroll -->
+  <div class="mobile-pill-nav" id="mobilePill">
+    <a class="pill-item" href="#">TV</a>
+    <a class="pill-item" href="#">Movies</a>
+    <a class="pill-item" href="#">Sports</a>
+    <a href="#" class="pill-expand"><i class='bx bx-chevron-up'></i></a>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV: Search left | Home mid | My Space right -->
+  <nav class="mobile-bottomnav">
+    <a href="search.html" class="mobile-nav-item">
+      <i class='bx bx-search'></i>
+      <span>Search</span>
+    </a>
+    <a href="home.html" class="mobile-nav-item">
+      <i class='bx bxs-home'></i>
+      <span>Home</span>
+    </a>
+    <a href="login.html" class="mobile-nav-item">
+      <div class="mobile-nav-avatar"><i class='bx bxs-user' style="font-size:14px"></i></div>
+      <span>My Space</span>
+    </a>
+  </nav>
+
+  <script>
+    // Pill — show after scrolling 200px
+    const mobilePill = document.getElementById('mobilePill');
+    function updatePill() {
+      if (!mobilePill) return;
+      if (window.scrollY > 200) mobilePill.classList.add('pill-visible');
+      else mobilePill.classList.remove('pill-visible');
+    }
+    window.addEventListener('scroll', updatePill, { passive: true });
+
+    function slide(trackId, prevId, nextId, dir) {
+      const track = document.getElementById(trackId);
+      const card  = track.firstElementChild;
+      const step  = (card ? card.offsetWidth + 10 : 280) * 3;
+      track.scrollLeft += dir * step;
+    }
+
+    function sync(trackId, prevId, nextId) {
+      const track = document.getElementById(trackId);
+      const prev  = document.getElementById(prevId);
+      const next  = document.getElementById(nextId);
+      if (!prev || !next) return;
+      prev.disabled = track.scrollLeft < 4;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    }
+
+    window.addEventListener('load', () => {
+      sync('lang-track','lang-prev','lang-next');
+      sync('ch-track','ch-prev','ch-next');
+      sync('genre-track','genre-prev','genre-next');
+      sync('sport-track','sport-prev','sport-next');
+    });
+  </script>
+
+</body>
+</html>

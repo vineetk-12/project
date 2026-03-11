@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Mode Toggle</title>
+  <style>
+    #theme {
+      width: 100vw;
+      height: 100vh;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #toggleBtn {
+      margin: 5px;
+      padding: 10px;
+      width: 120px;
+      height: 36px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Light mode  */
+    .light-theme {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .light-theme #toggleBtn {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    /* Dark mode */
+    .dark-theme {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .dark-theme #toggleBtn {
+      background-color: #ffffff;
+      color: #000000;
+    }
+  </style>
+</head>
+<body>
+  <div id="theme" class="light-theme">
+    <button id="toggleBtn">🌙 Dark Mode</button>
+    <h1>Theme</h1>
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Commodi quaerat odit libero rem vel quidem quas eum
+      impedit debitis quam<br> ipsum quod quibusdam doloribus odio deserunt corporis id, architecto asperiores?
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta aut distinctio <br>
+      eos numquam dolores mollitia
+      possimus, laborum omnis ullam ad voluptas neque odio aliquid vero vel quo doloremque pariatur quasi
+      reiciendis temporibus, iste explicabo eveniet? Consequuntur veniam enim quam voluptate.
+    </p>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById("toggleBtn");
+    const theme = document.getElementById("theme");
+
+   
+    let darkMode = localStorage.getItem("dark-mode") === "enabled";
+
+    if (darkMode) {
+      theme.classList.replace("light-theme", "dark-theme");
+      toggleBtn.textContent = "☀️ Light Mode";
+    }
+
+    // Toggle on button click
+    toggleBtn.addEventListener("click", () => {
+      darkMode = !darkMode;
+
+      if (darkMode) {
+        theme.classList.replace("light-theme", "dark-theme");
+        toggleBtn.textContent = "☀️ Light Mode";
+        localStorage.setItem("dark-mode", "enabled");
+      } else {
+        theme.classList.replace("dark-theme", "light-theme");
+        toggleBtn.textContent = "🌙 Dark Mode";
+        localStorage.setItem("dark-mode", "disabled");
+      }
+    });
+  </script>
+</body>
+</html>
