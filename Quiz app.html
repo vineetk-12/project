@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz App</title>
+    
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins, sans-serif;
+}
+
+body {
+    background-color: #5A4FCF;
+background-image: linear-gradient(315deg, #5A4FCF 0%, #242124 74%);
+;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.app {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    background: #ddd;
+    height: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#progress-bar {
+    height: 10px;
+    background: #4caf50;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+}
+
+/* MCQ Buttons */
+.btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    padding: 12px;
+    background: #eaeaea;
+    border-radius: 10px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #d5d5d5;
+}
+
+.correct {
+    background: #66bb6a;
+    color: #fff;
+}
+
+.wrong {
+    background: #e57373 ;
+    color: #fff;
+}
+
+#next-btn {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Leaderboard */
+#leaderboard {
+    margin-top: 20px;
+    list-style: none;
+}
+
+#leaderboard li {
+    padding: 8px;
+    background: #eee;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+</style>
+<body>
+
+    <div class="app">
+
+        <h1>MCQ Quiz App</h1>
+
+        
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <div class="quiz">
+            <h2 id="question">Question Text</h2>
+            <div id="answer-buttons" class="btn-grid"></div>
+            <button id="next-btn">Next</button>
+        </div>
+
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard"></ul>
+
+    </div>
+
+    <script>
+      const questions = [
+    {
+        question: "Which gas do plants absorb?",
+        answers: [
+            { text: "Oxygen", correct: false },
+            { text: "Carbon Dioxide", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Nitrogen", correct: false }
+        ]
+    },
+    {
+        question: "Who developed the theory of relativity?",
+        answers: [
+            { text: "Newton", correct: false },
+            { text: "Einstein", correct: true },
+            { text: "Tesla", correct: false },
+            { text: "Edison", correct: false }
+        ]
+    },
+    {
+        question: "What is the smallest continent?",
+        answers: [
+            { text: "Asia", correct: false },
+            { text: "Australia", correct: true },
+            { text: "Europe", correct: false },
+            { text: "Africa", correct: false }
+        ]
+    },
+
+   
+
+    {
+        question: "Which is the fastest land animal?",
+        answers: [
+            { text: "Tiger", correct: false },
+            { text: "Cheetah", correct: true },
+            { text: "Horse", correct: false },
+            { text: "Lion", correct: false }
+        ]
+    },
+    {
+        question: "Which is the largest ocean?",
+        answers: [
+            { text: "Atlantic Ocean", correct: false },
+            { text: "Indian Ocean", correct: false },
+            { text: "Pacific Ocean", correct: true },
+            { text: "Arctic Ocean", correct: false }
+        ]
+    },
+    {
+        question: "What is the capital of Japan?",
+        answers: [
+            { text: "Beijing", correct: false },
+            { text: "Tokyo", correct: true },
+            { text: "Seoul", correct: false },
+            { text: "Osaka", correct: false }
+        ]
+    },
+    {
+        question: "Which device is used to measure temperature?",
+        answers: [
+            { text: "Barometer", correct: false },
+            { text: "Thermometer", correct: true },
+            { text: "Hygrometer", correct: false },
+            { text: "Speedometer", correct: false }
+        ]
+    }
+];
+
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+const progressBar = document.getElementById("progress-bar");
+const leaderboardList = document.getElementById("leaderboard");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    loadLeaderboard();
+    showQuestion();
+}
+
+// Update progress bar
+function updateProgress() {
+    let progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+    progressBar.style.width = progressPercent + "%";
+}
+
+function showQuestion() {
+    resetState();
+    updateProgress();
+
+    let currentQuestion = questions[currentQuestionIndex];
+    questionElement.innerHTML = currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerHTML = answer.text;
+        btn.classList.add("btn");
+        if (answer.correct) btn.dataset.correct = "true";
+        btn.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(btn);
+    });
+}
+
+function resetState() {
+    nextButton.style.display = "none";
+    while (answerButtons.firstChild) answerButtons.removeChild(answerButtons.firstChild);
+}
+
+function selectAnswer(e) {
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+
+    if (isCorrect) score++;
+
+    // color all buttons
+    Array.from(answerButtons.children).forEach(btn => {
+        if (btn.dataset.correct === "true") btn.classList.add("correct");
+        else btn.classList.add("wrong");
+
+        btn.disabled = true;
+    });
+
+    nextButton.style.display = "block";
+}
+
+nextButton.addEventListener("click", () => {
+    if (nextButton.innerHTML === "Play Again") {
+        startQuiz();
+        return;
+    }
+
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showScore();
+    }
+});
+
+function showScore() {
+    resetState();
+    progressBar.style.width = "100%";
+
+    questionElement.innerHTML = `Your Score: ${score} / ${questions.length}`;
+
+    saveScore(score);
+
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display = "block";
+}
+
+function saveScore(score) {
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    // add new score
+    leaderboard.push({
+        score: score,
+        date: new Date().toLocaleString()
+    });
+
+    // sort high → low
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    // keep only top 5
+    leaderboard = leaderboard.slice(0, 5);
+
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+    loadLeaderboard();
+}
+
+function loadLeaderboard() {
+    leaderboardList.innerHTML = "";
+
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    leaderboard.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.score} pts — ${item.date}`;
+        leaderboardList.appendChild(li);
+    });
+}
+
+startQuiz();
+
+    </script>
+
+
+</body>
+
+</html>
