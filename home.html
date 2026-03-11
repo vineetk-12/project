@@ -1,0 +1,2556 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StreamClone – Hotstar Sidebar</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #030b17;
+        --accent: #1f80e0;
+        --sidebar-w: 95px;
+        --sidebar-expand: 260px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        font-family: "Inter", sans-serif;
+        color: white;
+        overflow-x: hidden;
+        background-color: #0f1014;
+      }
+
+      /* ================= SIDEBAR ================= */
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: var(--sidebar-w);
+        z-index: 1000;
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(
+          to right,
+          rgba(3, 11, 23, 0.65) 0%,
+          rgba(3, 11, 23, 0.35) 45%,
+          rgba(3, 11, 23, 0.15) 70%,
+          transparent 100%
+        );
+      }
+
+      .sidebar-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(3, 11, 23, 0.98) 0%,
+          rgba(3, 11, 23, 0.95) 65%,
+          rgba(3, 11, 23, 0.4) 85%,
+          transparent 100%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+      }
+
+      .sidebar:hover {
+        width: var(--sidebar-expand);
+      }
+      .sidebar:hover .sidebar-overlay {
+        opacity: 1;
+      }
+
+      .logo-container {
+        padding: 0 22px 50px;
+      }
+      .logo-container img {
+        width: 50px;
+      }
+
+      .nav-list {
+        list-style: none;
+        margin: auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 35px;
+        color: rgba(255, 255, 255, 0.65);
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.3s ease;
+        white-space: nowrap;
+        opacity: 0.8;
+      }
+
+      .nav-item i {
+        font-size: 24px;
+        min-width: 30px;
+        transition: transform 0.3s ease;
+      }
+      .nav-item span {
+        margin-left: 24px;
+        font-size: 17px;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateX(-18px);
+        transition: 0.35s ease;
+        pointer-events: none;
+      }
+
+      .sidebar:hover .nav-item span {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .nav-item:hover,
+      .nav-item.active {
+        color: white;
+      }
+      .nav-item:hover i {
+        transform: scale(1.15);
+      }
+      .sidebar:hover .nav-item {
+        opacity: 1;
+      }
+
+      /* ================= MOBILE TOP BAR ================= */
+      .mobile-topbar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1200;
+        padding: 14px 20px;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(
+          to bottom,
+          rgba(3, 11, 23, 0.95) 0%,
+          rgba(3, 11, 23, 0.5) 70%,
+          transparent 100%
+        );
+      }
+
+      .mobile-topbar img {
+        width: 40px;
+        display: block;
+      }
+
+      .mobile-topbar-icons {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .mobile-topbar-icons a {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 24px;
+        text-decoration: none;
+      }
+
+      /* ================= FLOATING PILL NAV ================= */
+      .mobile-pill-nav {
+        display: none;
+        position: fixed;
+        bottom: 74px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        z-index: 1199;
+        background: rgba(30, 32, 48, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 40px;
+        padding: 6px 4px;
+        flex-direction: row;
+        align-items: center;
+        gap: 0px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .mobile-pill-nav.pill-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .pill-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 13px;
+        border-radius: 30px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          color 0.2s;
+        cursor: pointer;
+        letter-spacing: 0.1px;
+      }
+
+      .pill-item:hover {
+        color: #fff;
+      }
+
+      .pill-expand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
+        margin-left: 2px;
+        text-decoration: none;
+        transition: background 0.2s;
+        border: none;
+        flex-shrink: 0;
+      }
+
+      .pill-expand:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      /* ================= MOBILE BOTTOM NAV ================= */
+      .mobile-bottomnav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1200;
+        background: rgba(6, 10, 20, 0.96);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 0 0 env(safe-area-inset-bottom, 0px);
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: stretch;
+        height: 64px;
+      }
+
+      .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        flex: 1;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        transition: color 0.2s;
+        padding: 8px 6px 6px;
+      }
+
+      .mobile-nav-item i {
+        font-size: 23px;
+        line-height: 1;
+      }
+      .mobile-nav-item.active {
+        color: #ffffff;
+      }
+
+      .mobile-nav-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1f80e0, #9b27af);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: white;
+        position: relative;
+      }
+
+      .mobile-nav-avatar::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        right: -1px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #e63462;
+        border: 1.5px solid rgba(6, 10, 20, 0.96);
+      }
+
+      /* ================= HERO ================= */
+      .hero {
+        position: relative;
+        height: 100vh;
+        overflow: visible;
+      }
+
+      /* ── FIXED PARALLAX LAYER ── */
+      .media-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .bg-img,
+      .bg-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .bg-img.active,
+      .bg-video.playing {
+        opacity: 1;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background:
+          linear-gradient(to right, var(--bg) 12%, transparent 80%),
+          linear-gradient(to top, var(--bg) 3%, transparent 40%);
+        z-index: 1;
+        pointer-events: none;
+        transition: background 1s ease;
+      }
+
+      .overlay.video-active {
+        background:
+          linear-gradient(to right, var(--bg) 0%, transparent 20%),
+          linear-gradient(to top, var(--bg) 0%, transparent 10%);
+      }
+
+      /* KEY FIX: scroll-black-fade only covers the viewport height,
+         so it NEVER bleeds over the content sections or footer */
+      .scroll-black-fade {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        z-index: 2;
+        pointer-events: none;
+        transition: opacity 0.05s linear;
+      }
+
+      .media-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(3, 11, 23, 0.95) 0%,
+          rgba(3, 11, 23, 0.8) 20%,
+          rgba(3, 11, 23, 0) 50%
+        );
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* ── SCROLLABLE HERO CONTENT ── */
+      .content {
+        position: relative;
+        z-index: 10;
+        margin-left: 120px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        max-width: 650px;
+        padding-bottom: 130px;
+      }
+
+      .title-img {
+        max-width: 350px;
+        height: auto;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .metadata {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #e1e1e1;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .metadata span:not(:last-child)::after {
+        content: "•";
+        margin-left: 12px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .description {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.5;
+        margin-bottom: 25px;
+        font-size: 1.15rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .tags {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 35px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .tags span {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .btn-watch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 95px;
+        background: linear-gradient(
+          to right,
+          #1288f3 0%,
+          #3d49ad 70%,
+          #5041a6 74%,
+          #7c2f94 78%,
+          #8e288d 82%,
+          #a12085 86%,
+          #ab1b80 90%,
+          #bd1479 95%,
+          #e20369 100%
+        );
+        color: white;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          filter 0.2s ease;
+      }
+
+      .btn-watch:hover {
+        transform: scale(1.03);
+        filter: brightness(1.1);
+      }
+      .btn-watch i {
+        font-size: 1.5rem;
+      }
+
+      .btn-add {
+        width: 55px;
+        height: 55px;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        transition: background 0.3s;
+      }
+
+      .btn-add:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .slider-nav {
+        position: absolute;
+        bottom: 130px;
+        right: 60px;
+        display: flex;
+        gap: 15px;
+        z-index: 20;
+      }
+
+      .thumb {
+        width: 80px;
+        aspect-ratio: 16/9;
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: pointer;
+        opacity: 0.5;
+        border: 2.5px solid transparent;
+        transition: 0.3s ease;
+        position: relative;
+      }
+
+      .thumb.active {
+        opacity: 1;
+        transform: scale(1.1);
+        border-color: white;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: var(--accent);
+        width: 0%;
+      }
+
+      .btn-mute {
+        position: absolute;
+        bottom: 200px;
+        right: 40px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 20;
+        transition: all 0.4s ease;
+      }
+
+      .btn-mute.fade-out {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .btn-mute:hover {
+        background: white;
+        color: black;
+      }
+
+      /* ================= CONTENT WRAPPER ================= */
+      /* KEY FIX: z-index: 20 ensures content sits above the fixed black fade */
+      .jiohotstar-wrapper {
+        margin-top: -100px;
+        background: #0f1014;
+        color: #fff;
+        padding: 40px 0;
+        overflow-x: hidden;
+        position: relative;
+        z-index: 20;
+      }
+
+      .category-section {
+        margin-left: 100px;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 1;
+      }
+
+      .category-section:hover {
+        z-index: 100;
+      }
+
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0 4%;
+        margin-bottom: 1px;
+        position: relative;
+        z-index: 5;
+      }
+
+      .header-row h2 {
+        font-size: 28px;
+        color: #e5e5e5;
+        font-weight: 600;
+      }
+
+      .view-all {
+        color: #999;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        padding-bottom: 5px;
+        opacity: 0;
+        transition:
+          opacity 0.3s,
+          color 0.3s;
+      }
+
+      .view-all:hover {
+        color: #fff;
+      }
+
+      .slider-wrapper {
+        position: relative;
+        width: 100%;
+      }
+
+      .scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        height: 330px;
+        padding-top: 10px;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .scroll-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      .row {
+        display: flex;
+        gap: 12px;
+        padding: 0 4%;
+        width: max-content;
+        align-items: flex-start;
+      }
+
+      .nav-btn {
+        position: absolute;
+        top: 10px;
+        width: 80px;
+        height: 310px;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 40px;
+        cursor: pointer;
+        z-index: 5000;
+        opacity: 0;
+        transition: opacity 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .category-section:hover .nav-btn,
+      .category-section:hover .view-all {
+        opacity: 1;
+      }
+      .category-section:has(.card:hover) .nav-btn {
+        opacity: 0;
+      }
+      .nav-btn.hidden-by-scroll {
+        opacity: 0 !important;
+        pointer-events: none;
+      }
+      .nav-btn:hover {
+        color: #fff;
+      }
+
+      .prev {
+        left: 0;
+        background: linear-gradient(to right, #0f1014, transparent);
+      }
+      .next {
+        right: 0;
+        background: linear-gradient(to left, #0f1014, transparent);
+      }
+
+      .card {
+        position: relative;
+        width: 220px;
+        height: 310px;
+        flex-shrink: 0;
+        transition: none;
+        z-index: 1;
+      }
+
+      .card.active {
+        z-index: 4000;
+      }
+
+      .poster {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #222;
+        transition: opacity 0.3s;
+      }
+
+      .poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hover-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #1a1c22;
+        border-radius: 8px;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+        z-index: 500;
+      }
+
+      .card.active .hover-card {
+        opacity: 1;
+        pointer-events: auto;
+        width: 320px;
+        height: auto;
+        left: -50px;
+        top: 0;
+        position: absolute;
+      }
+
+      .card.active.edge-left .hover-card {
+        left: 20px;
+      }
+      .card.active.edge-right .hover-card {
+        left: auto;
+        right: 0;
+      }
+
+      .hover-img {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+      }
+      .hover-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .hover-content {
+        padding: 18px;
+      }
+
+      .action-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .btn-watch-card {
+        flex: 1;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-plus {
+        width: 45px;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .meta-data {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+
+      .description-text {
+        font-size: 13px;
+        color: #cecece;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .floating-hover-card {
+        display: none;
+        position: absolute;
+        z-index: 99999;
+        width: 320px;
+        background: #1a1c22;
+        border-radius: 12px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+        overflow: hidden;
+        pointer-events: auto;
+      }
+
+      .floating-hover-card .hover-img {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+      }
+      .floating-hover-card .hover-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .floating-hover-card .hover-content {
+        padding: 18px;
+      }
+      .floating-hover-card .action-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      .floating-hover-card .btn-watch-card {
+        flex: 1;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .floating-hover-card .btn-plus {
+        width: 45px;
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .floating-hover-card .meta-data {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+      .floating-hover-card .description-text {
+        font-size: 13px;
+        color: #cecece;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .card.ranked {
+        margin-left: 50px;
+      }
+
+      .rank-number {
+        position: absolute;
+        right: 100%;
+        bottom: -10px;
+        width: 110px;
+        height: 110px;
+        margin-right: -59px;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .rank-number svg {
+        overflow: visible;
+        filter: drop-shadow(3px 5px 4px rgba(0, 0, 0, 0.5));
+      }
+
+      .rank-number svg text {
+        font-family: "Arial Black", sans-serif;
+        font-size: 100px;
+        text-anchor: middle;
+        fill: url(#rankGradient);
+        stroke: #000;
+        stroke-width: 1px;
+        paint-order: stroke;
+      }
+
+      /* ================= FOOTER ================= */
+      /* KEY FIX: z-index: 20, position: relative so it's above fixed layers */
+      .site-footer {
+        background: #0d0f13;
+        padding: 48px 80px 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        position: relative;
+        z-index: 20;
+      }
+
+      .footer-top {
+        display: flex;
+        gap: 0;
+        justify-content: space-between;
+        padding-bottom: 36px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .footer-col {
+        flex: 1;
+      }
+
+      .footer-col--connect {
+        flex: 0 0 auto;
+        min-width: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer-heading {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+      .footer-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .footer-links a {
+        font-size: 13px;
+        color: #8a9bb5;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: #fff;
+      }
+      .lang-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .lang-check {
+        color: #8a9bb5;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+      .social-icons {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 18px;
+        text-decoration: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .social-icon:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .store-badges {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .store-badge img {
+        height: 36px;
+        width: auto;
+        display: block;
+        border-radius: 6px;
+      }
+      .footer-bottom {
+        padding-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .footer-bottom-left {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .copyright {
+        font-size: 12px;
+        color: #8a9bb5;
+      }
+      .footer-legal-links {
+        display: flex;
+        gap: 16px;
+      }
+      .footer-legal-links a {
+        font-size: 12px;
+        color: #8a9bb5;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .footer-legal-links a:hover {
+        color: #fff;
+      }
+
+      /* ================================================
+         TABLET (≤ 1024px) — desktop sidebar, no mobile UI
+         ================================================ */
+      @media (max-width: 1024px) {
+        :root {
+          --sidebar-w: 70px;
+          --sidebar-expand: 220px;
+        }
+
+        .content {
+          margin-left: 90px;
+          max-width: 500px;
+          padding-bottom: 110px;
+        }
+        .title-img {
+          max-width: 260px;
+        }
+        .description {
+          font-size: 1rem;
+        }
+        .btn-watch {
+          padding: 12px 50px;
+          font-size: 1rem;
+        }
+        .slider-nav {
+          right: 30px;
+          bottom: 110px;
+          gap: 10px;
+        }
+        .thumb {
+          width: 65px;
+        }
+        .category-section {
+          margin-left: 75px;
+        }
+        .header-row h2 {
+          font-size: 22px;
+        }
+        .card {
+          width: 180px;
+          height: 260px;
+        }
+        .scroll-container {
+          height: 280px;
+        }
+        .nav-btn {
+          height: 260px;
+        }
+        .floating-hover-card {
+          display: none !important;
+        }
+
+        /* Keep desktop sidebar, hide all mobile elements */
+        .sidebar {
+          display: flex !important;
+        }
+        .mobile-topbar {
+          display: none !important;
+        }
+        .mobile-bottomnav {
+          display: none !important;
+        }
+        .mobile-pill-nav {
+          display: none !important;
+        }
+
+        .site-footer {
+          padding: 36px 40px 24px;
+        }
+        .footer-top {
+          flex-wrap: wrap;
+          gap: 32px;
+        }
+        .footer-col {
+          flex: 0 0 calc(50% - 16px);
+        }
+        .footer-col--connect {
+          flex: 0 0 100%;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 20px;
+          align-items: flex-start;
+        }
+      }
+
+      /* ================================================
+         MOBILE (≤ 768px)
+         ================================================ */
+      @media (max-width: 768px) {
+        /* Hide desktop sidebar, show mobile nav */
+        .sidebar {
+          display: none !important;
+        }
+        .mobile-topbar {
+          display: flex !important;
+        }
+        .mobile-bottomnav {
+          display: flex !important;
+        }
+        .mobile-pill-nav {
+          display: flex !important;
+        }
+
+        .hero {
+          height: 100svh;
+          min-height: 500px;
+        }
+
+        /* Portrait overlay — top + bottom fade, no side gradient */
+        .overlay {
+          background:
+            linear-gradient(
+              to top,
+              var(--bg) 28%,
+              rgba(3, 11, 23, 0.3) 60%,
+              transparent 85%
+            ),
+            linear-gradient(
+              to bottom,
+              rgba(3, 11, 23, 0.55) 0%,
+              transparent 25%
+            );
+        }
+
+        .overlay.video-active {
+          background:
+            linear-gradient(to top, var(--bg) 18%, transparent 55%),
+            linear-gradient(
+              to bottom,
+              rgba(3, 11, 23, 0.55) 0%,
+              transparent 25%
+            );
+        }
+
+        .media-layer::after {
+          background: none;
+        }
+
+        .content {
+          margin-left: 0;
+          max-width: 100%;
+          padding: 0 20px 120px;
+          height: 100svh;
+        }
+
+        .title-img {
+          max-width: 200px;
+          margin-bottom: 12px;
+        }
+
+        .metadata {
+          font-size: 0.8rem;
+          gap: 6px;
+          margin-bottom: 12px;
+        }
+        .metadata span:not(:last-child)::after {
+          margin-left: 6px;
+        }
+
+        .description {
+          font-size: 0.9rem;
+          margin-bottom: 14px;
+          -webkit-line-clamp: 2;
+        }
+
+        .tags {
+          font-size: 0.8rem;
+          margin-bottom: 20px;
+          gap: 6px;
+        }
+        .actions {
+          gap: 10px;
+        }
+        .btn-watch {
+          padding: 12px 0;
+          font-size: 0.95rem;
+          flex: 1;
+        }
+        .btn-add {
+          width: 48px;
+          height: 48px;
+          font-size: 1.5rem;
+          flex-shrink: 0;
+        }
+
+        .slider-nav {
+          right: 50%;
+          transform: translateX(50%);
+          bottom: 82px;
+          gap: 8px;
+        }
+
+        .thumb {
+          width: 50px;
+          border-width: 2px;
+        }
+        .btn-mute {
+          bottom: 150px;
+          right: 16px;
+          width: 28px;
+          height: 28px;
+        }
+
+        /* Content sections */
+        .jiohotstar-wrapper {
+          margin-top: -60px;
+          padding: 20px 0 80px;
+        }
+        .category-section {
+          margin-left: 0;
+        }
+        .header-row {
+          padding: 0 16px;
+        }
+        .header-row h2 {
+          font-size: 18px;
+        }
+        .view-all {
+          opacity: 1;
+          font-size: 13px;
+        }
+        .card {
+          width: 130px;
+          height: 190px;
+        }
+        .scroll-container {
+          height: 205px;
+        }
+        .nav-btn {
+          display: none;
+        }
+        .row {
+          gap: 8px;
+          padding: 0 16px;
+        }
+        .card.ranked {
+          margin-left: 30px;
+        }
+        .rank-number {
+          width: 70px;
+          height: 70px;
+          margin-right: -36px;
+        }
+        .floating-hover-card {
+          display: none !important;
+        }
+
+        /* KEY FIX: footer fully reset for mobile */
+        .site-footer {
+          margin-left: 0 !important;
+          padding: 32px 20px 90px;
+        }
+
+        .footer-top {
+          flex-direction: column;
+          gap: 28px;
+          padding-bottom: 28px;
+        }
+        .footer-col {
+          flex: none;
+        }
+        .footer-col--connect {
+          min-width: auto;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .footer-legal-links {
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+      }
+
+      /* ================================================
+         SMALL MOBILE (≤ 480px)
+         ================================================ */
+      @media (max-width: 480px) {
+        .title-img {
+          max-width: 155px;
+        }
+        .description {
+          -webkit-line-clamp: 2;
+          font-size: 0.85rem;
+        }
+        .btn-watch {
+          font-size: 0.88rem;
+        }
+        .card {
+          width: 110px;
+          height: 158px;
+        }
+        .scroll-container {
+          height: 173px;
+        }
+        .header-row h2 {
+          font-size: 16px;
+        }
+        .thumb {
+          width: 42px;
+        }
+        .slider-nav {
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- DESKTOP SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-overlay"></div>
+      <div class="logo-container">
+        <img src="logo.png" />
+      </div>
+      <div class="nav-list">
+        <a href="home.html" class="nav-item active"
+          ><i class="bx bxs-home"></i><span>Home</span></a
+        >
+        <a href="search.html" class="nav-item"
+          ><i class="bx bx-search"></i><span>Search</span></a
+        >
+        <a class="nav-item"><i class="bx bx-tv"></i><span>TV</span></a>
+        <a class="nav-item"
+          ><i class="bx bx-movie-play"></i><span>Movies</span></a
+        >
+        <a class="nav-item"
+          ><i class="bx bx-football"></i><span>Sports</span></a
+        >
+        <a class="nav-item" href="category.html"
+          ><i class="bx bx-category"></i><span>Categories</span></a
+        >
+        <a href="login.html" class="nav-item"
+          ><i class="bx bxs-user-circle"></i><span>My Space</span></a
+        >
+      </div>
+    </nav>
+
+    <!-- MOBILE TOP BAR -->
+    <header class="mobile-topbar">
+      <img src="logo.png" alt="Logo" />
+      <div class="mobile-topbar-icons">
+        <a href="#"><i class="bx bx-cast"></i></a>
+      </div>
+    </header>
+
+    <!-- FIXED background layer -->
+    <div class="media-layer">
+      <img id="img-1" class="bg-img active" src="conjuring.avif" />
+      <img
+        id="img-2"
+        class="bg-img"
+        src="kis kis ko pyaar karoon 2 image.avif"
+      />
+      <img id="img-3" class="bg-img" src="lbm image.avif" />
+      <img id="img-4" class="bg-img" src="jurasssic big.avif" />
+      <img id="img-5" class="bg-img" src="splitsvilla big.avif" />
+      <video
+        id="vid-1"
+        class="bg-video"
+        loop
+        muted
+        playsinline
+        src="conjuring1.mp4"
+      ></video>
+      <video
+        id="vid-2"
+        class="bg-video"
+        loop
+        muted
+        playsinline
+        src="Kis Kisko Pyaar Karoon 2  video.mp4"
+      ></video>
+      <video
+        id="vid-3"
+        class="bg-video"
+        loop
+        muted
+        playsinline
+        src="LBW video.mp4"
+      ></video>
+      <video
+        id="vid-4"
+        class="bg-video"
+        loop
+        muted
+        playsinline
+        src="Jurassic video.mp4"
+      ></video>
+      <video
+        id="vid-5"
+        class="bg-video"
+        loop
+        muted
+        playsinline
+        src="Splitsvilla video.mp4"
+      ></video>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="scroll-black-fade" id="scrollBlackFade"></div>
+
+    <main class="hero">
+      <div class="content">
+        <img class="title-img" src="conjuring logo.avif" alt="THE CONJURING" />
+        <div class="metadata">
+          <span>2013</span><span>A</span><span>1h 52m</span><span>English</span>
+        </div>
+        <p class="description">
+          Experience the case that strikes at the core of Ed and<br />
+          Lorraine's mission and attacks the very heart of the Warren<br />
+          family ... their daughter, Judy.
+        </p>
+        <div class="tags">
+          <span>Horror</span> | <span>Thriller</span> |
+          <span>Supernatural</span>
+        </div>
+        <div class="actions">
+          <button class="btn-watch">
+            <i class="bx bx-play"></i> Watch Now
+          </button>
+          <button class="btn-add"><i class="bx bx-plus"></i></button>
+        </div>
+      </div>
+
+      <div class="slider-nav">
+        <div
+          class="thumb active"
+          data-id="1"
+          data-title="THE CONJURING"
+          data-title-img="conjuring logo.avif"
+          data-desc="Experience the case that strikes at the core of Ed and<br>Lorraine's mission and attacks the very heart of the Warren<br>family ... their daughter, Judy."
+          data-year="2013"
+          data-rating="A"
+          data-duration="1h 52m"
+          data-lang="English"
+          data-tags="Horror | Thriller | Supernatural"
+        >
+          <img src="conjuring small.avif" />
+          <div class="progress-bar"></div>
+        </div>
+        <div
+          class="thumb"
+          data-id="2"
+          data-title="KIS KISKO PYAAR KAROON 2"
+          data-title-img="kis kis ko pyar logo.avif"
+          data-desc="Mohan wants to marry the love of his life, Sania, but destiny<br>has a madcap plan! He ends up marrying three women of<br>different religions, and chaos follows."
+          data-year="2025"
+          data-rating="U/A 13+"
+          data-duration="2h 15m"
+          data-lang="Hindi"
+          data-tags="Comedy | Romance | Slapstick"
+        >
+          <img src="kis kis ko pyaar karoon 2 image.avif" />
+          <div class="progress-bar"></div>
+        </div>
+        <div
+          class="thumb"
+          data-id="3"
+          data-title="LBW"
+          data-title-img="lbw logo.avif"
+          data-desc="A washed-up cricketer becomes a coach to a generation of<br>misfit students to save a legacy."
+          data-year="2024"
+          data-rating="U/A 16+"
+          data-duration="2h 45m"
+          data-lang="Hindi"
+          data-tags="Drama | Sport | Thriller"
+        >
+          <img src="lbm small.avif" />
+          <div class="progress-bar"></div>
+        </div>
+        <div
+          class="thumb"
+          data-id="4"
+          data-title="JURASSIC WORLD"
+          data-title-img="jurassic logo.avif"
+          data-desc="A new theme park, built on the original site of Jurassic Park, creates a genetically modified hybrid dinosaur, <br>which escapes containment and goes on a killing spree."
+          data-year="2015"
+          data-rating="U/A 13+"
+          data-duration="2h 4m"
+          data-lang="English"
+          data-tags="Sci-Fi | Action | Adventure"
+        >
+          <img src="jurassic small.avif" />
+          <div class="progress-bar"></div>
+        </div>
+        <div
+          class="thumb"
+          data-id="5"
+          data-title="SPLITSVILLA"
+          data-title-img="splitsvilla.avif"
+          data-desc="32 singles, 2 villas, 1 dilemma! Love or money? Your<br>favourite dating show is back with non-stop drama<br>and fierce twists. Get ready for the ultimate battle!"
+          data-year="2026"
+          data-rating="U/A 16+"
+          data-duration="6 Season"
+          data-lang="Hindi"
+          data-tags="Reality TV | Romance | Drama"
+        >
+          <img src="splitsvilla small.avif" />
+          <div class="progress-bar"></div>
+        </div>
+      </div>
+
+      <button class="btn-mute"><i class="bx bx-volume-mute"></i></button>
+    </main>
+
+    <!-- CONTENT SECTIONS -->
+    <div class="jiohotstar-wrapper">
+      <svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+        <defs>
+          <linearGradient id="rankGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#9EA1A9" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div class="category-section">
+        <div class="header-row">
+          <h2>Latest Releases</h2>
+          <a href="#" class="view-all">View All ></a>
+        </div>
+        <div class="slider-wrapper">
+          <button
+            class="nav-btn prev"
+            onclick="scrollSlider('mainSlider', -800)"
+          >
+            &#10094;
+          </button>
+          <button
+            class="nav-btn next"
+            onclick="scrollSlider('mainSlider', 800)"
+          >
+            &#10095;
+          </button>
+          <div class="scroll-container" id="mainSlider">
+            <div class="row" id="movieRow"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-section" style="margin-top: 20px">
+        <div class="header-row">
+          <h2>Drama Delights</h2>
+          <a href="#" class="view-all">View All ></a>
+        </div>
+        <div class="slider-wrapper">
+          <button
+            class="nav-btn prev"
+            onclick="scrollSlider('dramaSlider', -800)"
+          >
+            &#10094;
+          </button>
+          <button
+            class="nav-btn next"
+            onclick="scrollSlider('dramaSlider', 800)"
+          >
+            &#10095;
+          </button>
+          <div class="scroll-container" id="dramaSlider">
+            <div class="row" id="dramaRow"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-section" style="margin-top: 40px">
+        <div class="header-row">
+          <h2>Top 10 in India Today - Hindi</h2>
+          <a href="#" class="view-all">View All ></a>
+        </div>
+        <div class="slider-wrapper">
+          <button
+            class="nav-btn prev"
+            onclick="scrollSlider('top10Slider', -800)"
+          >
+            &#10094;
+          </button>
+          <button
+            class="nav-btn next"
+            onclick="scrollSlider('top10Slider', 800)"
+          >
+            &#10095;
+          </button>
+          <div class="scroll-container" id="top10Slider">
+            <div class="row" id="top10Row"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-section" style="margin-top: 40px">
+        <div class="header-row">
+          <h2>Action Movie</h2>
+          <a href="#" class="view-all">View All ></a>
+        </div>
+        <div class="slider-wrapper">
+          <button
+            class="nav-btn prev"
+            onclick="scrollSlider('actionSlider', -800)"
+          >
+            &#10094;
+          </button>
+          <button
+            class="nav-btn next"
+            onclick="scrollSlider('actionSlider', 800)"
+          >
+            &#10095;
+          </button>
+          <div class="scroll-container" id="actionSlider">
+            <div class="row" id="actionRow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">View Website in</h4>
+          <ul class="footer-links">
+            <li class="lang-option">
+              <span class="lang-check"><i class="bx bx-check"></i></span>
+              <a href="#">English</a>
+            </li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Need Help?</h4>
+          <ul class="footer-links">
+            <li><a href="#">Visit Help Center</a></li>
+            <li><a href="#">Share Feedback</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-col--connect">
+          <h4 class="footer-heading">Connect with Us</h4>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="bx bxl-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="bx bxl-twitter"></i></a>
+          </div>
+          <div class="store-badges">
+            <a href="#" class="store-badge">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                alt="Google Play"
+              />
+            </a>
+            <a href="#" class="store-badge">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                alt="App Store"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">
+          <p class="copyright">© 2026 STAR. All Rights Reserved.</p>
+          <div class="footer-legal-links">
+            <a href="#">Terms Of Use</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- FLOATING PILL NAV -->
+    <div class="mobile-pill-nav" id="mobilePill">
+      <a class="pill-item" href="#">TV</a>
+      <a class="pill-item" href="#">Movies</a>
+      <a class="pill-item" href="#">Sports</a>
+      <a href="category.html" class="pill-expand"
+        ><i class="bx bx-chevron-up"></i
+      ></a>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mobile-bottomnav">
+      <a href="search.html" class="mobile-nav-item">
+        <i class="bx bx-search"></i>
+        <span>Search</span>
+      </a>
+      <a href="home.html" class="mobile-nav-item active">
+        <i class="bx bxs-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="login.html" class="mobile-nav-item">
+        <div class="mobile-nav-avatar">
+          <i class="bx bxs-user" style="font-size: 14px"></i>
+        </div>
+        <span>My Space</span>
+      </a>
+    </nav>
+
+    <script>
+      const lenis = new Lenis();
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Scroll-driven black fade — only on hero section
+      const scrollFade = document.getElementById("scrollBlackFade");
+      const heroHeight = window.innerHeight;
+
+      lenis.on("scroll", ({ scroll }) => {
+        const start = heroHeight * 0.1;
+        const end = heroHeight * 0.6;
+        const progress = Math.min(
+          Math.max((scroll - start) / (end - start), 0),
+          1,
+        );
+        scrollFade.style.opacity = progress;
+      });
+
+      let timer;
+
+      function startProgress(id) {
+        gsap.set(".progress-bar", { width: "0%" });
+        gsap.to(`.thumb[data-id="${id}"] .progress-bar`, {
+          width: "100%",
+          duration: 4,
+          ease: "none",
+        });
+      }
+
+      function playTrailer(id) {
+        document.querySelectorAll(".bg-video").forEach((v) => {
+          v.pause();
+          v.classList.remove("playing");
+          v.currentTime = 0;
+        });
+        const vid = document.getElementById(`vid-${id}`);
+        vid.classList.add("playing");
+        vid.play();
+        document.querySelector(".overlay").classList.add("video-active");
+      }
+
+      $(".thumb").on("click", function () {
+        if ($(this).hasClass("active")) return;
+        clearTimeout(timer);
+        $(".thumb").removeClass("active");
+        $(this).addClass("active");
+        document.querySelector(".overlay").classList.remove("video-active");
+        document.querySelectorAll(".bg-video").forEach((v) => {
+          v.pause();
+          v.classList.remove("playing");
+          v.currentTime = 0;
+        });
+
+        const id = $(this).data("id");
+        const thumb = $(this);
+
+        gsap.to(".content", {
+          opacity: 0,
+          x: -20,
+          duration: 0.3,
+          onComplete: () => {
+            $(".bg-img").removeClass("active");
+            $(`#img-${id}`).addClass("active");
+            $(".title-img")
+              .attr("src", thumb.data("title-img"))
+              .attr("alt", thumb.data("title"));
+            $(".description").html(thumb.data("desc"));
+            $(".metadata span").eq(0).text(thumb.data("year"));
+            $(".metadata span").eq(1).text(thumb.data("rating"));
+            $(".metadata span").eq(2).text(thumb.data("duration"));
+            $(".metadata span").eq(3).text(thumb.data("lang"));
+            const tags = thumb.data("tags").split("|");
+            $(".tags").html(
+              tags.map((t) => `<span>${t.trim()}</span>`).join(" | "),
+            );
+            gsap.to(".content", { opacity: 1, x: 0, duration: 0.5 });
+          },
+        });
+
+        startProgress(id);
+        timer = setTimeout(() => playTrailer(id), 4000);
+      });
+
+      $(".btn-mute").on("click", function () {
+        const videos = document.querySelectorAll(".bg-video");
+        let isMuted = false;
+        videos.forEach((v) => {
+          v.muted = !v.muted;
+          isMuted = v.muted;
+        });
+        $(this).html(
+          isMuted
+            ? "<i class='bx bx-volume-mute'></i>"
+            : "<i class='bx bx-volume-full'></i>",
+        );
+      });
+
+      // Pill — show only after scrolling past hero
+      const mobilePill = document.getElementById("mobilePill");
+      function updatePillVisibility(scroll) {
+        if (!mobilePill) return;
+        if (scroll > window.innerHeight * 0.6) {
+          mobilePill.classList.add("pill-visible");
+        } else {
+          mobilePill.classList.remove("pill-visible");
+        }
+      }
+      lenis.on("scroll", ({ scroll }) => updatePillVisibility(scroll));
+      window.addEventListener(
+        "scroll",
+        () => updatePillVisibility(window.scrollY),
+        { passive: true },
+      );
+
+      startProgress(1);
+      timer = setTimeout(() => playTrailer(1), 4000);
+
+      let mouseMoveTimer;
+      const muteBtn = document.querySelector(".btn-mute");
+
+      function hideMuteButton() {
+        muteBtn.classList.add("fade-out");
+      }
+      function showMuteButton() {
+        muteBtn.classList.remove("fade-out");
+        clearTimeout(mouseMoveTimer);
+        mouseMoveTimer = setTimeout(hideMuteButton, 3000);
+      }
+
+      showMuteButton();
+      window.addEventListener("mousemove", showMuteButton);
+      muteBtn.addEventListener("mouseenter", () =>
+        clearTimeout(mouseMoveTimer),
+      );
+      muteBtn.addEventListener("mouseleave", () => showMuteButton());
+
+      /* === SLIDER DATA === */
+      const movieData = [
+        {
+          id: 10,
+          image: "latest1.avif",
+          hoverImage: "latest h1.avif",
+          title: "भ्रमम",
+          year: "2021",
+          age: "U/A 16+",
+          dur: "2h 31m",
+          desc: "Ray Mathews feigns blindness for his art, only to witness a high-profile murder. Trapped in a web of deceit, he must outplay killers before he loses everything.",
+        },
+        {
+          id: 11,
+          image: "latest2.avif",
+          hoverImage: "latest h2.avif",
+          title: "",
+          year: "2025",
+          age: "U/A 16+",
+          dur: "2h 16m",
+          desc: "A seasoned cop investigates brutal twin murders but soon gets trapped in a chilling psychological mind game where every clue deceives and danger closes in.",
+        },
+        {
+          id: 12,
+          image: "latest3.avif",
+          hoverImage: "latest h3.avif",
+          title: "",
+          year: "2020",
+          age: "U/A 13+",
+          dur: "1h 42m",
+          desc: "Free from a psych ward, Ji Mo's prove real when she meets hunter Meng. To stop Lotus from stealing her power, she must survive three days to become Guardian of the Gate.",
+        },
+        {
+          id: 13,
+          image: "latest4.avif",
+          hoverImage: "latest h4.avif",
+          title: "",
+          year: "2024",
+          age: "U/A 16+",
+          dur: "2h 06m",
+          desc: "Unfairly dropped, talented cricketers face crushing odds. Fueled by grit, they fight back to conquer obstacles and reclaim their stolen dreams.",
+        },
+        {
+          id: 14,
+          image: "latest5.avif",
+          hoverImage: "latest h5.avif",
+          title: "",
+          year: "2025",
+          age: "U/A 16+",
+          dur: "2h 16m",
+          desc: "Kidnapped in India, a tech mogul's rescue forces a cop to recruit her ex-boyfriend, a former officer pulled from a quiet family into a perilous mission.",
+        },
+        {
+          id: 15,
+          image: "latest6.avif",
+          hoverImage: "latest h6.avif",
+          title: "",
+          year: "2006",
+          age: "U/A 13+",
+          dur: "2h 39m",
+          desc: "An Englishwoman's film on India's forgotten freedom fighters thrusts six young Indians into reliving history, igniting their own defiant saga for freedom.",
+        },
+        {
+          id: 16,
+          image: "latest7.avif",
+          hoverImage: "latest h7.avif",
+          title: "",
+          year: "2026",
+          age: "U/A 13+",
+          dur: "Show",
+          desc: "Shivprasad and Shalini juggle middle-class family life with their two kids. But hush! Shivprasad is also a secret agent, how long can he keep up his cover?",
+        },
+        {
+          id: 17,
+          image: "latest8.avif",
+          hoverImage: "latest h8.avif",
+          title: "",
+          year: "2026",
+          age: "U/A 13+",
+          dur: "Show",
+          desc: "Once an AIPMT topper, Aarambhi's life is now weighed down by marital duties, but deep within her lies a long-lost dream. Will she get a second chance?",
+        },
+        {
+          id: 18,
+          image: "latest9.avif",
+          hoverImage: "latest h9.avif",
+          title: "",
+          year: "2024",
+          age: "A",
+          dur: "1h 42m",
+          desc: "A wave of bloody terror rips through the Sangkara Train, destroying carriages one by one and plunging trapped passengers into a brutal fight for survival.",
+        },
+        {
+          id: 19,
+          image: "latest10.avif",
+          hoverImage: "latest h10.avif",
+          title: "",
+          year: "2026",
+          age: "U/A 7+",
+          dur: "1 season",
+          desc: "Journey into the sacred heart of Bihar as host Chandan Roy explores the ancient Shakti tradition that shaped the spiritual geography of India for millennia.",
+        },
+        {
+          id: 20,
+          image: "latest11.avif",
+          hoverImage: "latest h11.avif",
+          title: "",
+          year: "2025",
+          age: "U",
+          dur: "2h 19m",
+          desc: "Chasing the dream of a city home, a middle-class family battles relentless hurdles. Their quest for a roof becomes a test of grit and hope.",
+        },
+        {
+          id: 21,
+          image: "latest12.avif",
+          hoverImage: "latest h12.avif",
+          title: "",
+          year: "2026",
+          age: "U/A 16+",
+          dur: "",
+          desc: "Kashish Kapoor is back! Get ready for unfiltered, no-holds-barred chat sessions with the contestants of Splitsvilla X6.",
+        },
+        {
+          id: 22,
+          image: "latest13.avif",
+          hoverImage: "latest h13.avif",
+          title: "",
+          year: "2021",
+          age: "U/A 13+",
+          dur: "1h 57m",
+          desc: "In 2003, Young-ho begins a letter exchange with So-hee. They find solace in writing and agree to meet on Dec 31st, but only if it rains, leading to a long, hopeful wait.",
+        },
+
+        {
+          id: 23,
+          image: "latest14.avif",
+          hoverImage: "latest h14.avif",
+          title: "",
+          year: "2026",
+          age: "U",
+          dur: "7m",
+          desc: "Celebrate the life and legacy of the revered queen Ahilyabai Holkar, who shaped 18th-century Malwa into a realm of justice, prosperity, and compassion.",
+        },
+        {
+          id: 24,
+          image: "latest15.avif",
+          hoverImage: "latest h15.avif",
+          title: "",
+          year: "2024",
+          age: "U/A 16+",
+          dur: "1h 40m",
+          desc: "Based on a real event, a Korean flight bound for Gimpo gets hijacked by one of the passengers.",
+        },
+      ];
+
+      const dramaData = [
+        {
+          id: 30,
+          image: "popular1.avif",
+          hoverImage: "popular h1.avif",
+          title: "Grahan",
+          year: "2021",
+          age: "16+",
+          dur: "1 Season",
+          desc: "When a young IPS officer investigates the 1984 riots, she uncovers a shocking truth about her own father that forces her to choose between duty and family.",
+        },
+        {
+          id: 31,
+          image: "popular2.avif",
+          hoverImage: "popular h2.avif",
+          title: "Masoom",
+          year: "2022",
+          age: "16+",
+          dur: "1 Season",
+          desc: "A daughter's quest to uncover the truth about her mother's death reveals dark family secrets and tests her relationship with her powerful father.",
+        },
+        {
+          id: 32,
+          image: "popular3.avif",
+          hoverImage: "popular h3.avif",
+          title: "Out of Love",
+          year: "2019",
+          age: "18+",
+          dur: "2 Seasons",
+          desc: "A doctor's perfect life shatters when she suspects her husband of having an affair, leading her down a dangerous path of obsession and revenge.",
+        },
+        {
+          id: 33,
+          image: "popular4.avif",
+          hoverImage: "popular h4.avif",
+          title: "Kaun Pravin Tambe?",
+          year: "2022",
+          age: "U/A 13+",
+          dur: "2h 14m",
+          desc: "The incredible true story of cricketer Pravin Tambe, who defied age and expectations to make his professional debut at 41.",
+        },
+        {
+          id: 34,
+          image: "popular5.avif",
+          hoverImage: "popular h5.avif",
+          title: "1962: The War in the Hills",
+          year: "2021",
+          age: "16+",
+          dur: "1 Season",
+          desc: "Inspired by true events, this series follows a company of 125 Indian soldiers who fought against 3000 Chinese soldiers in a battle that would change history.",
+        },
+        {
+          id: 35,
+          image: "popular 6.avif",
+          hoverImage: "popular h6.avif",
+          title: "City of Dreams",
+          year: "2019",
+          age: "18+",
+          dur: "3 Seasons",
+          desc: "An assassination attempt on a political figure sparks a brutal power struggle between his son and daughter, blurring the lines of family and politics.",
+        },
+        {
+          id: 36,
+          image: "1768915934880-v.avif",
+          hoverImage: "popular h7.avif",
+          title: "Dil Bechara",
+          year: "2020",
+          age: "U/A 13+",
+          dur: "1h 41m",
+          desc: "Two cancer patients find love and a lifetime of adventure in a short period, teaching them that it's how you live that matters, not how long.",
+        },
+        {
+          id: 37,
+          image: "popular8.avif",
+          hoverImage: "popular h8.avif",
+          title: "The Night Manager",
+          year: "2023",
+          age: "U/A 16+",
+          dur: "2 Parts",
+          desc: "A former soldier, now a hotel night manager, is recruited by intelligence to infiltrate the inner circle of a dangerous international arms dealer.",
+        },
+        {
+          id: 38,
+          image: "popular9.avif",
+          hoverImage: "popular h9.avif",
+          title: "Aarya",
+          year: "2020",
+          age: "18+",
+          dur: "3 Seasons",
+          desc: "After her husband's murder, a doting mother is forced to take over his illegal drug business to protect her three children from a world of crime.",
+        },
+        {
+          id: 39,
+          image: "popular10.avif",
+          hoverImage: "popular h10.avif",
+          title: "Criminal Justice",
+          year: "2019",
+          age: "18+",
+          dur: "3 Seasons",
+          desc: "A cab driver's life turns upside down after a one-night stand, as he finds himself accused of murder. A lawyer with a troubled past takes his case.",
+        },
+        {
+          id: 40,
+          image: "popular11.avif",
+          hoverImage: "popular h11.avif",
+          title: "Special Ops",
+          year: "2020",
+          age: "U/A 16+",
+          dur: "1 Season",
+          desc: "A RAW agent believes a series of terror attacks are linked to a single mastermind and spends 19 years hunting for him, leading a team of elite spies.",
+        },
+        {
+          id: 41,
+          image: "popular12.avif",
+          hoverImage: "popular h12.avif",
+          title: "Hostages",
+          year: "2019",
+          age: "16+",
+          dur: "2 Seasons",
+          desc: "A brilliant surgeon's family is taken hostage the night before she is to operate on a powerful politician. She is ordered to kill him on the operating table.",
+        },
+        {
+          id: 42,
+          image: "popular13.avif",
+          hoverImage: "popular h13.avif",
+          title: "The Great Indian Murder",
+          year: "2022",
+          age: "18+",
+          dur: "1 Season",
+          desc: "When a notorious industrialist is murdered at his own party, two detectives must navigate a web of deceit and suspects, each with a motive.",
+        },
+        {
+          id: 43,
+          image: "popular14.avif",
+          hoverImage: "popular h14.avif",
+          title: "Human",
+          year: "2022",
+          age: "18+",
+          dur: "1 Season",
+          desc: "An emotional thriller about the dark world of human drug trials, where ambition, greed, and a thirst for power lead to a deadly conspiracy.",
+        },
+      ];
+
+      const top10Data = [
+        {
+          id: 51,
+          image: "top1.avif",
+          hoverImage: "top h1.avif",
+          title: "splitsvilla",
+          year: "2026",
+          age: "U/A 13+",
+          dur: "6 Season",
+          desc: "32 singles, 2 villas, 1 dilemma! Love or money? Your favourite dating show is back with non-stop drama and fierce twists. Get ready for the ultimate battle!",
+        },
+        {
+          id: 52,
+          image: "1770317226522-v.avif",
+          hoverImage: "top h2.avif",
+          title: "Ghum Hai Kisikey Pyaar Meiin",
+          year: "2020",
+          age: "U/A 13+",
+          dur: "Drama",
+          desc: "Virat sacrifices his love to honour the promise he made to a dying man. Trapped between the past and the present, will he find love beyond the chains of duty?",
+        },
+        {
+          id: 53,
+          image: "top3.avif",
+          hoverImage: "top h3.avif",
+          title: "Yeh Rishta Kya Kehlata Hai",
+          year: "2009",
+          age: "U/A 13+",
+          dur: "Drama",
+          desc: "A personal tragedy drives a wedge between Armaan and Abhira. Years later, destiny brings them face-to-face, but will they be able to look past their grievances?",
+        },
+        {
+          id: 54,
+          image: "top4.avif",
+          hoverImage: "top h4.avif",
+          title: "Jhanak",
+          year: "2023",
+          age: "U/A 13+",
+          dur: "Drama",
+          desc: "Jhanak, a talented girl, grows up in hardship and aspires to be a dancer. However, a tragedy pushes her into a marriage of convenience, turning her life upside down.",
+        },
+        {
+          id: 55,
+          image: "1770972737689-v.avif",
+          hoverImage: "top h5.avif",
+          title: "Udne Ki Aasha",
+          year: "2024",
+          age: "U/A 13+",
+          dur: "Drama",
+          desc: "Sachin, a chaotic guy, and Sailee, a responsible girl, are poles apart. But in a twist of fate, they are bound in marriage. Will love blossom between them?",
+        },
+        {
+          id: 56,
+          image: "1771245236100-v.avif",
+          hoverImage: "top h6.avif",
+          title: "Advocate Anjali Awasthi",
+          year: "2024",
+          age: "U/A 13+",
+          dur: "Drama",
+          desc: "A genius lawyer, Anjali Awasthi, fights for justice while battling her own demons. Her journey is one of grit, determination, and the quest for truth.",
+        },
+        {
+          id: 57,
+          image: "top7.avif",
+          hoverImage: "top h7.avif",
+          title: "Taarak Mehta Ka Ooltah Chashmah",
+          year: "2008",
+          age: "U/A 13+",
+          dur: "Comedy",
+          desc: "The residents of Gokuldham Society face daily life challenges but tackle them with a pinch of humor and a lot of unity.",
+        },
+        {
+          id: 58,
+          image: "1770922457427-v.avif",
+          hoverImage: "top h8.avif",
+          title: "Mahabharat",
+          year: "2013",
+          age: "U/A 13+",
+          dur: "Mythology",
+          desc: "The mother of all wars, the mother of all rivalries, the cauldron of emotions, insecurities, jealousies, and power play - Mahabharat!",
+        },
+        {
+          id: 59,
+          image: "top9.avif",
+          hoverImage: "top h9.avif",
+          title: "Koffee with Karan",
+          year: "2004",
+          age: "U/A 16+",
+          dur: "Talk Show",
+          desc: "Karan Johar hosts the biggest Bollywood stars, getting them to spill the beans on their personal and professional lives in this candid talk show.",
+        },
+        {
+          id: 60,
+          image: "top10.avif",
+          hoverImage: "top h10.avif",
+          title: "Aarya",
+          year: "2020",
+          age: "U/A 16+",
+          dur: "3 Seasons",
+          desc: "After her husband's murder, a doting mother is forced to take over his illegal drug business to protect her three children from a world of crime.",
+        },
+      ];
+
+      const actionData = [
+        {
+          id: 71,
+          image: "action1.avif",
+          hoverImage: "action h1.avif",
+          title: "superman",
+          year: "2025",
+          age: "U/A 16+",
+          dur: "2h 36m",
+          desc: "A Superman who's driven by compassion and an inherent belief in the goodness of humankind.",
+        },
+        {
+          id: 72,
+          image: "action2.avif",
+          hoverImage: "action h2.avif",
+          title: "Pathaan",
+          year: "2025",
+          age: "U/A 16+",
+          dur: "2h 26m",
+          desc: "An orphan learns that he must protect nine sacred scriptures from a rising darkness. If he fails to unlock his power, the world will fall to evil.",
+        },
+        {
+          id: 73,
+          image: "action3.avif",
+          hoverImage: "action h3.avif",
+          title: "Jawan",
+          year: "2023",
+          age: "U/A 16+",
+          dur: "2h 49m",
+          desc: "A high-octane action thriller which outlines the emotional journey of a man who is set to rectify the wrongs in the society.",
+        },
+        {
+          id: 74,
+          image: "action4.avif",
+          hoverImage: "action h4.avif",
+          title: "Fighter",
+          year: "2024",
+          age: "U/A 13+",
+          dur: "2h 46m",
+          desc: "Top aviators come together to face a looming danger. They must rise above their personal demons and work as a team to save the nation.",
+        },
+        {
+          id: 75,
+          image: "action5.avif",
+          hoverImage: "action h5.avif",
+          title: "Animal",
+          year: "2023",
+          age: "A",
+          dur: "3h 24m",
+          desc: "The hardened son of a powerful industrialist returns home after years abroad and vows to protect his father from enemies, even if it means descending into madness.",
+        },
+        {
+          id: 76,
+          image: "action6.avif",
+          hoverImage: "action h6.avif",
+          title: "Tiger 3",
+          year: "2023",
+          age: "U/A 16+",
+          dur: "2h 36m",
+          desc: "Tiger and Zoya are back - to save the country and their family. This time it's personal.",
+        },
+        {
+          id: 77,
+          image: "action7.webp",
+          hoverImage: "action h7.webp",
+          title: "Vikram",
+          year: "2022",
+          age: "U/A 16+",
+          dur: "2h 54m",
+          desc: "A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.",
+        },
+        {
+          id: 78,
+          image: "action8.avif",
+          hoverImage: "action h8.avif",
+          title: "KGF Chapter 2",
+          year: "2022",
+          age: "U/A 16+",
+          dur: "2h 48m",
+          desc: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes. While his allies look up to him, the government sees him as a threat to law and order.",
+        },
+        {
+          id: 79,
+          image: "action9.avif",
+          hoverImage: "action h9.avif",
+          title: "RRR",
+          year: "2022",
+          age: "U/A 16+",
+          dur: "3h 2m",
+          desc: "A fictitious story about two legendary revolutionaries and their journey away from home before they started fighting for their country in 1920's.",
+        },
+        {
+          id: 80,
+          image: "action10.avif",
+          hoverImage: "action h10.avif",
+          title: "Salaar",
+          year: "2023",
+          age: "A",
+          dur: "2h 55m",
+          desc: "A gang leader tries to keep a promise made to his dying friend and takes on the other criminal gangs.",
+        },
+      ];
+
+      function renderRow(rowId, data, isRanked = false) {
+        const row = document.getElementById(rowId);
+        data.forEach((movie, index) => {
+          const card = document.createElement("div");
+          card.className = "card" + (isRanked ? " ranked" : "");
+          let rankHTML = isRanked
+            ? `<div class="rank-number"><svg viewBox="0 0 100 100"><text x="50" y="95">${index + 1}</text></svg></div>`
+            : "";
+          card.innerHTML = `
+            ${rankHTML}
+            <div class="poster"><img src="${movie.image}" loading="lazy"></div>
+            <div class="hover-card">
+              <div class="hover-img"><img src="${movie.hoverImage}" loading="lazy"></div>
+              <div class="hover-content">
+                <div class="action-bar">
+                  <button class="btn-watch-card">▶ Watch Now</button>
+                  <button class="btn-plus">+</button>
+                </div>
+                <div class="meta-data">${movie.year} • ${movie.age} • ${movie.dur} • Hindi</div>
+                <div class="description-text">${movie.desc}</div>
+              </div>
+            </div>`;
+          row.appendChild(card);
+        });
+      }
+
+      renderRow("movieRow", movieData);
+      renderRow("dramaRow", dramaData);
+      renderRow("top10Row", top10Data, true);
+      renderRow("actionRow", actionData);
+
+      // ── HOVER SYSTEM (desktop only) ──
+      const isMobile = () => window.innerWidth <= 768;
+
+      const popup = document.createElement("div");
+      popup.className = "floating-hover-card";
+      document.body.appendChild(popup);
+
+      let currentCard = null,
+        enterTimer = null,
+        leaveTimer = null;
+
+      function openPopup(card) {
+        if (isMobile()) return;
+        clearTimeout(leaveTimer);
+        const hc = card.querySelector(".hover-card");
+        if (!hc) return;
+        currentCard = card;
+        card.querySelector(".poster").style.opacity = "0";
+        popup.innerHTML = hc.innerHTML;
+        const r = card.getBoundingClientRect();
+        const popW = 320;
+        let left = r.left + r.width / 2 - popW / 2;
+        left = Math.max(105, Math.min(left, window.innerWidth - popW - 10));
+        popup.style.display = "block";
+        gsap.fromTo(
+          popup,
+          {
+            opacity: 0,
+            y: 20,
+            scale: 0.95,
+            left,
+            top: r.top + window.scrollY,
+            width: popW,
+          },
+          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "power3.out" },
+        );
+      }
+
+      function closePopup() {
+        gsap.to(popup, {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.in",
+          onComplete: () => {
+            popup.style.display = "none";
+            if (currentCard) {
+              currentCard.querySelector(".poster").style.opacity = "1";
+              currentCard = null;
+            }
+          },
+        });
+      }
+
+      document.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          if (isMobile()) return;
+          clearTimeout(leaveTimer);
+          clearTimeout(enterTimer);
+          if (currentCard && currentCard !== card) {
+            currentCard.querySelector(".poster").style.opacity = "1";
+            currentCard = null;
+          }
+          enterTimer = setTimeout(() => openPopup(card), 600);
+        });
+        card.addEventListener("mouseleave", () => {
+          if (isMobile()) return;
+          clearTimeout(enterTimer);
+          leaveTimer = setTimeout(closePopup, 120);
+        });
+      });
+
+      popup.addEventListener("mouseenter", () => clearTimeout(leaveTimer));
+      popup.addEventListener("mouseleave", () => {
+        leaveTimer = setTimeout(closePopup, 120);
+      });
+
+      function scrollSlider(id, amount) {
+        const container = document.getElementById(id);
+        if (!container) return;
+        const row = container.querySelector(".row");
+        row.style.pointerEvents = "none";
+        gsap.to(container, {
+          scrollLeft: container.scrollLeft + amount,
+          duration: 0.2,
+          ease: "power3.inOut",
+          onComplete: () => {
+            row.style.pointerEvents = "auto";
+          },
+        });
+      }
+
+      document.querySelectorAll(".scroll-container").forEach((container) => {
+        const prevBtn = container.parentElement.querySelector(".prev");
+        const nextBtn = container.parentElement.querySelector(".next");
+        if (!prevBtn || !nextBtn) return;
+        const updateBtns = () => {
+          prevBtn.classList.toggle(
+            "hidden-by-scroll",
+            container.scrollLeft < 10,
+          );
+          nextBtn.classList.toggle(
+            "hidden-by-scroll",
+            container.scrollLeft + container.clientWidth >=
+              container.scrollWidth - 10,
+          );
+        };
+        container.addEventListener("scroll", updateBtns, { passive: true });
+        new ResizeObserver(updateBtns).observe(container.querySelector(".row"));
+      });
+    </script>
+  </body>
+</html>
