@@ -1,0 +1,789 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>signin/login</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Figtree", sans-serif;
+        background: #f0f0ee;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 36px 32px;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: 0 2px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      /* tabs */
+      .tabs {
+        display: flex;
+        border-bottom: 2px solid #f0f0ee;
+        margin-bottom: 28px;
+      }
+      .tab {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: none;
+        font-family: "Figtree", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #999;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.2s;
+      }
+      .tab.active {
+        color: #111;
+        border-bottom-color: #111;
+      }
+
+      /* screens */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* steps */
+      .steps {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 24px;
+      }
+      .dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #f0f0ee;
+        color: #999;
+        font-size: 11px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s;
+        flex-shrink: 0;
+      }
+      .dot.active {
+        background: #111;
+        color: #fff;
+      }
+      .dot.done {
+        background: #4caf7d;
+        color: #fff;
+      }
+      .bar {
+        flex: 1;
+        height: 2px;
+        background: #f0f0ee;
+        border-radius: 2px;
+      }
+      .bar.done {
+        background: #4caf7d;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111;
+        margin-bottom: 4px;
+      }
+      .sub {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 22px;
+      }
+
+      /* fields */
+      .field {
+        margin-bottom: 14px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 8px;
+        font-family: "Figtree", sans-serif;
+        font-size: 14px;
+        color: #111;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      input:focus {
+        border-color: #111;
+      }
+      .pw {
+        position: relative;
+      }
+      .pw input {
+        padding-right: 36px;
+      }
+      .eye {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 14px;
+        color: #aaa;
+        user-select: none;
+      }
+      .err {
+        font-size: 11px;
+        color: #e74c3c;
+        margin-top: 4px;
+        display: none;
+      }
+      .err.show {
+        display: block;
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      /* buttons */
+      .btn {
+        width: 100%;
+        padding: 11px;
+        border: none;
+        border-radius: 8px;
+        font-family: "Figtree", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        margin-top: 6px;
+      }
+      .btn-dark {
+        background: #111;
+        color: #fff;
+      }
+      .btn-dark:hover {
+        background: #333;
+      }
+      .btn-ghost {
+        background: none;
+        border: 1.5px solid #e8e8e8;
+        color: #555;
+      }
+      .btn-ghost:hover {
+        border-color: #bbb;
+      }
+      .two-btn {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .two-btn .btn {
+        margin-top: 0;
+      }
+
+      /* chips */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 14px;
+      }
+      .chip {
+        padding: 6px 13px;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #666;
+        cursor: pointer;
+        background: none;
+        font-family: "Figtree", sans-serif;
+        transition: all 0.15s;
+      }
+      .chip:hover {
+        border-color: #aaa;
+        color: #111;
+      }
+      .chip.on {
+        border-color: #111;
+        background: #111;
+        color: #fff;
+      }
+
+      /* misc */
+      .link-row {
+        text-align: center;
+        font-size: 13px;
+        color: #999;
+        margin-top: 18px;
+      }
+      .link-row a {
+        color: #111;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .forgot {
+        text-align: right;
+        font-size: 12px;
+        margin-top: 4px;
+        margin-bottom: 2px;
+      }
+      .forgot a {
+        color: #999;
+        cursor: pointer;
+      }
+      .forgot a:hover {
+        color: #111;
+      }
+
+      /* success */
+      .success {
+        text-align: center;
+        padding: 8px 0;
+      }
+      .circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 24px;
+        animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .circle.green {
+        background: #4caf7d;
+      }
+      .circle.dark {
+        background: #111;
+        font-size: 20px;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+
+      /* dashboard info */
+      .info-box {
+        background: #f7f7f5;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 3px 0;
+      }
+      .info-row span:first-child {
+        color: #999;
+      }
+      .info-row span:last-child {
+        color: #111;
+        font-weight: 500;
+      }
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+      }
+      .tag {
+        padding: 3px 10px;
+        background: #111;
+        color: #fff;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      /* toast */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(60px);
+        background: #111;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 99;
+        pointer-events: none;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+      .toast.green {
+        background: #4caf7d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="card">
+      <!-- TABS -->
+      <div class="tabs" id="tabs">
+        <button class="tab active" onclick="showTab('signup')">Sign up</button>
+        <button class="tab" onclick="showTab('login')">Log in</button>
+      </div>
+
+      <!-- ── SIGNUP STEP 1 ── -->
+      <div class="screen active" id="sc-s1">
+        <div class="steps">
+          <div class="dot active">1</div>
+          <div class="bar"></div>
+          <div class="dot">2</div>
+          <div class="bar"></div>
+          <div class="dot">3</div>
+        </div>
+        <h2>Create account</h2>
+        <p class="sub">Step 1 of 3 — your credentials</p>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="r-email" placeholder="you@example.com" />
+          <div class="err" id="e-email">Enter a valid email.</div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="pw">
+            <input
+              type="password"
+              id="r-pass"
+              placeholder="Min 8 characters"
+            /><span class="eye" onclick="togglePw('r-pass', this)">👁</span>
+          </div>
+          <div class="err" id="e-pass">At least 8 characters.</div>
+        </div>
+        <div class="field">
+          <label>Confirm password</label>
+          <div class="pw">
+            <input
+              type="password"
+              id="r-conf"
+              placeholder="Repeat password"
+            /><span class="eye" onclick="togglePw('r-conf', this)">👁</span>
+          </div>
+          <div class="err" id="e-conf">Passwords don't match.</div>
+        </div>
+        <button class="btn btn-dark" onclick="s1Next()">Continue →</button>
+        <div class="link-row">
+          Already have an account? <a onclick="showTab('login')">Log in</a>
+        </div>
+      </div>
+
+      <!-- ── SIGNUP STEP 2 ── -->
+      <div class="screen" id="sc-s2">
+        <div class="steps">
+          <div class="dot done">✓</div>
+          <div class="bar done"></div>
+          <div class="dot active">2</div>
+          <div class="bar"></div>
+          <div class="dot">3</div>
+        </div>
+        <h2>Your profile</h2>
+        <p class="sub">Step 2 of 3 — a bit about you</p>
+        <div class="field two">
+          <div>
+            <label>First name</label
+            ><input type="text" id="r-first" placeholder="Jane" />
+          </div>
+          <div>
+            <label>Last name</label
+            ><input type="text" id="r-last" placeholder="Doe" />
+          </div>
+        </div>
+        <div
+          class="err"
+          id="e-name"
+          style="margin-top: -8px; margin-bottom: 10px"
+        >
+          Enter your full name.
+        </div>
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="r-user" placeholder="janedoe" />
+          <div class="err" id="e-user">Choose a username.</div>
+        </div>
+        <div class="two-btn">
+          <button class="btn btn-ghost" onclick="show('sc-s1')">← Back</button>
+          <button class="btn btn-dark" onclick="s2Next()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- ── SIGNUP STEP 3 ── -->
+      <div class="screen" id="sc-s3">
+        <div class="steps">
+          <div class="dot done">✓</div>
+          <div class="bar done"></div>
+          <div class="dot done">✓</div>
+          <div class="bar done"></div>
+          <div class="dot active">3</div>
+        </div>
+        <h2>Interests</h2>
+        <p class="sub">Step 3 of 3 — pick at least 2</p>
+        <div class="chips">
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Design
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Tech
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Music
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Travel
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Food
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Fitness
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Science
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Gaming
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Books
+          </button>
+          <button class="chip" onclick="this.classList.toggle('on')">
+            Finance
+          </button>
+        </div>
+        <div class="err" id="e-int">Pick at least 2.</div>
+        <div class="two-btn">
+          <button class="btn btn-ghost" onclick="show('sc-s2')">← Back</button>
+          <button class="btn btn-dark" onclick="s3Next()">
+            Create account
+          </button>
+        </div>
+      </div>
+
+      <!-- ── SIGNUP SUCCESS ── -->
+      <div class="screen" id="sc-sdone">
+        <div class="success">
+          <div class="circle green">✓</div>
+          <h2>You're all set!</h2>
+          <p class="sub" style="margin-bottom: 20px">
+            Welcome, <span id="done-name"></span>!
+          </p>
+          <button class="btn btn-dark" onclick="showTab('login')">
+            Go to login →
+          </button>
+        </div>
+      </div>
+
+      <!-- ── LOGIN ── -->
+      <div class="screen" id="sc-login">
+        <h2>Welcome back</h2>
+        <p class="sub">Log in to your account</p>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="l-email" placeholder="you@example.com" />
+          <div class="err" id="le-email">Email not found.</div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="pw">
+            <input
+              type="password"
+              id="l-pass"
+              placeholder="Your password"
+            /><span class="eye" onclick="togglePw('l-pass', this)">👁</span>
+          </div>
+          <div class="err" id="le-pass">Wrong password.</div>
+        </div>
+        <div class="forgot">
+          <a onclick="toast('Reset link sent! (demo)', 'green')"
+            >Forgot password?</a
+          >
+        </div>
+        <button class="btn btn-dark" onclick="doLogin()">Log in</button>
+        <div class="link-row">
+          No account? <a onclick="showTab('signup')">Sign up</a>
+        </div>
+      </div>
+
+      <!-- ── DASHBOARD (after login) ── -->
+      <div class="screen" id="sc-dash">
+        <div class="success">
+          <div class="circle dark">👋</div>
+          <h2 id="d-hi"></h2>
+          <p class="sub" style="margin-bottom: 16px" id="d-email"></p>
+        </div>
+        <div class="info-box">
+          <div class="info-row">
+            <span>Full name</span><span id="d-name"></span>
+          </div>
+          <div class="info-row">
+            <span>Username</span><span id="d-user"></span>
+          </div>
+          <div class="tag-list" id="d-tags"></div>
+        </div>
+        <button class="btn btn-ghost" onclick="logout()">Log out</button>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ── Helpers ──
+      const $ = (id) => document.getElementById(id);
+      const getUsers = () => JSON.parse(localStorage.getItem("_u") || "{}");
+      const setUsers = (u) => localStorage.setItem("_u", JSON.stringify(u));
+
+      // Show a single screen, hide all others
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        $(id).classList.add("active");
+      }
+
+      // Show/hide tab bar
+      function setTabs(visible) {
+        $("tabs").style.display = visible ? "flex" : "none";
+      }
+
+      // Switch between signup and login tabs
+      function showTab(tab) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((b, i) =>
+            b.classList.toggle(
+              "active",
+              (tab === "signup" && i === 0) || (tab === "login" && i === 1),
+            ),
+          );
+        setTabs(true);
+        if (tab === "signup") {
+          clearSignup();
+          show("sc-s1");
+        }
+        if (tab === "login") show("sc-login");
+      }
+
+      function togglePw(id, el) {
+        const inp = $(id);
+        inp.type = inp.type === "password" ? "text" : "password";
+        el.textContent = inp.type === "password" ? "👁" : "🙈";
+      }
+
+      let tt;
+      function toast(msg, cls = "") {
+        const t = $("toast");
+        t.textContent = msg;
+        t.className = "toast show " + cls;
+        clearTimeout(tt);
+        tt = setTimeout(() => t.classList.remove("show"), 2600);
+      }
+
+      function showErr(id, msg) {
+        const e = $(id);
+        if (msg) e.textContent = msg;
+        e.classList.add("show");
+      }
+      function hideErr(id) {
+        $(id).classList.remove("show");
+      }
+
+      // ── Sign up ──
+      function s1Next() {
+        const email = $("r-email").value.trim();
+        const pass = $("r-pass").value;
+        const conf = $("r-conf").value;
+        let ok = true;
+
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+          showErr("e-email");
+          ok = false;
+        } else hideErr("e-email");
+        if (pass.length < 8) {
+          showErr("e-pass");
+          ok = false;
+        } else hideErr("e-pass");
+        if (pass !== conf) {
+          showErr("e-conf");
+          ok = false;
+        } else hideErr("e-conf");
+        if (!ok) return;
+
+        const u = getUsers();
+        if (u[email]) {
+          showErr("e-email", "Email already registered.");
+          return;
+        }
+        show("sc-s2");
+      }
+
+      function s2Next() {
+        const first = $("r-first").value.trim();
+        const last = $("r-last").value.trim();
+        const user = $("r-user").value.trim();
+        let ok = true;
+
+        if (!first || !last) {
+          showErr("e-name");
+          ok = false;
+        } else hideErr("e-name");
+        if (!user) {
+          showErr("e-user");
+          ok = false;
+        } else hideErr("e-user");
+        if (ok) show("sc-s3");
+      }
+
+      function s3Next() {
+        const picked = document.querySelectorAll("#sc-s3 .chip.on");
+        if (picked.length < 2) {
+          showErr("e-int");
+          return;
+        }
+
+        const email = $("r-email").value.trim();
+        const u = getUsers();
+        u[email] = {
+          email,
+          password: btoa($("r-pass").value),
+          firstName: $("r-first").value.trim(),
+          lastName: $("r-last").value.trim(),
+          username: $("r-user").value.trim(),
+          interests: Array.from(picked).map((c) => c.textContent),
+        };
+        setUsers(u);
+
+        $("done-name").textContent = $("r-first").value.trim();
+        show("sc-sdone");
+        toast("Account created! 🎉", "green");
+      }
+
+      // ── Login ──
+      function doLogin() {
+        const email = $("l-email").value.trim();
+        const pass = $("l-pass").value;
+        const u = getUsers();
+        hideErr("le-email");
+        hideErr("le-pass");
+
+        if (!u[email]) {
+          showErr("le-email");
+          return;
+        }
+        if (atob(u[email].password) !== pass) {
+          showErr("le-pass");
+          return;
+        }
+
+        localStorage.setItem("_session", email);
+        openDash(u[email]);
+        toast("Welcome back, " + u[email].firstName + "!", "green");
+      }
+
+      function openDash(user) {
+        setTabs(false); // hide tab bar completely
+        $("d-hi").textContent = "Hi, " + user.firstName + "!";
+        $("d-email").textContent = user.email;
+        $("d-name").textContent = user.firstName + " " + user.lastName;
+        $("d-user").textContent = "@" + user.username;
+        const wrap = $("d-tags");
+        wrap.innerHTML = "";
+        (user.interests || []).forEach((i) => {
+          const t = document.createElement("span");
+          t.className = "tag";
+          t.textContent = i;
+          wrap.appendChild(t);
+        });
+        show("sc-dash");
+      }
+
+      function clearSignup() {
+        ["r-email", "r-pass", "r-conf", "r-first", "r-last", "r-user"].forEach(
+          (id) => ($(id).value = ""),
+        );
+        document
+          .querySelectorAll("#sc-s3 .chip")
+          .forEach((c) => c.classList.remove("on"));
+        ["e-email", "e-pass", "e-conf", "e-name", "e-user", "e-int"].forEach(
+          (id) => hideErr(id),
+        );
+      }
+
+      function logout() {
+        localStorage.removeItem("_session");
+        $("l-email").value = "";
+        $("l-pass").value = "";
+        clearSignup();
+        showTab("login");
+        toast("Logged out.");
+      }
+
+      // ── Auto-restore session on load ──
+      (function () {
+        const email = localStorage.getItem("_session");
+        if (email) {
+          const u = getUsers()[email];
+          if (u) {
+            openDash(u);
+            return;
+          }
+        }
+        show("sc-s1"); // default: signup
+        setTabs(true);
+      })();
+    </script>
+  </body>
+</html>
