@@ -1,0 +1,1897 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AURA | Luxury Navigation</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Playfair Display", serif;
+        background: #fff;
+        overflow-x: hidden;
+        height: 200vh; /* Extra height to test scroll effects */
+      }
+
+      /* === NAVBAR BASE === */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        padding: 30px 60px;
+        z-index: 1000;
+        background: transparent;
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        align-items: center;
+      }
+
+      /* White Background State (On Scroll) */
+      .nav-white-bg {
+        background: white;
+        padding: 15px 60px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      /* Logo Styling */
+      .logo-center {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        letter-spacing: 12px;
+        font-weight: 700;
+        color: #000;
+        text-decoration: none;
+        transition: transform 0.3s ease;
+      }
+
+      /* Links & Buttons */
+      .nav-left {
+        font-size: 18px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        color: #666;
+        font-weight: 700;
+        position: relative;
+        transition: color 0.3s;
+      }
+
+      .nav-left:hover {
+        color: #000;
+      }
+
+      .menu-text {
+        font-size: 20px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        color: #666;
+        font-weight: 700;
+        position: relative;
+      }
+
+      .nav-right {
+        display: flex;
+        justify-content: flex-end;
+        gap: 25px;
+        align-items: center;
+      }
+
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-icon svg {
+        width: 100%;
+        fill: #000;
+      }
+
+      /* === PANELS === */
+      .side-panel {
+        position: fixed;
+        top: 0;
+        width: 350px;
+        height: 100vh;
+        background: white;
+        z-index: 2000;
+        padding: 60px 40px;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+      }
+
+      #contactPanel {
+        left: -30%;
+        width: 25%;
+      }
+      #menuPanel {
+        right: -350px;
+      }
+      #shoppingBagPanel {
+        right: -30%;
+        width: 20%;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1999;
+        display: none;
+        opacity: 0;
+      }
+
+      .close-btn {
+        font-size: 11px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        margin-bottom: 40px;
+        align-self: flex-end;
+      }
+
+      .menu-link {
+        font-family: "Playfair Display", serif;
+        font-size: 40px;
+        text-decoration: none;
+        color: #666;
+        margin-bottom: 20px;
+        display: inline-block;
+        width: fit-content;
+        opacity: 0;
+        transform: translateY(20px);
+        position: relative;
+      }
+
+      /* Account Dropdown */
+      .account-menu-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .account-dropdown {
+        position: absolute;
+        top: 100%;
+        right: -20px;
+        background: white;
+        padding: 25px 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f0f0f0;
+        width: max-content;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        align-items: flex-start;
+      }
+
+      .account-dropdown .menu-link {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        opacity: 1;
+        transform: none;
+        margin-bottom: 0;
+      }
+
+      /* Contact Panel Styles */
+      .contact-section {
+        margin-bottom: 30px;
+      }
+      .contact-section h4 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+      .contact-section p {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 5px;
+      }
+      .stagger-contact {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      /* Search Panel */
+      .search-panel {
+        position: fixed;
+        top: -40%;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background: white;
+        z-index: 2001;
+        display: flex;
+        flex-direction: column;
+        padding: 40px 60px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+      .search-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      .search-input {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+        font-family: "Playfair Display", serif;
+        font-size: 30px;
+        text-align: center;
+        outline: none;
+      }
+      .stagger-trend {
+        text-decoration: none;
+        color: #999;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color 0.3s;
+        position: relative;
+      }
+      .stagger-trend:hover {
+        color: #000;
+      }
+
+      /* Hover Animation Shared Styles */
+      .menu-text::after,
+      .menu-link::after,
+      .stagger-trend::after,
+      .luxury-btn::after,
+      .hover-anim::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 1px;
+        bottom: 0;
+        left: 0;
+        background-color: #000;
+        transform-origin: bottom center;
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .menu-text:hover::after,
+      .menu-link:hover::after,
+      .stagger-trend:hover::after,
+      .luxury-btn:hover::after,
+      .hover-anim:hover::after {
+        transform: scaleX(1);
+      }
+
+      .menu-text:hover,
+      .menu-link:hover,
+      .stagger-trend:hover,
+      .luxury-btn:hover,
+      .hover-anim:hover {
+        color: #000 !important;
+      }
+
+      .product-section-wrapper {
+        position: relative;
+        margin-top: 120px;
+        margin-bottom: 20px;
+        
+      }
+
+      .main-header {
+        text-align: center;
+        padding: 40px 0 20px;
+        border-bottom: 1px solid #f0f0f0;
+        position: sticky;
+        top: 70px;
+        background: white;
+        z-index: 100;
+      }
+
+      .store-branding {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-bottom: 15px;
+      }
+
+      .store-branding h2 {
+        border: 2px solid red;
+        padding: 10px;
+        margin: 0;
+        font-size: 16px;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      
+        
+      }
+
+      /* === BUTTONS === */
+      .store-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 10px;
+      }
+
+      .store-btn {
+        color: #666;
+        background-color: transparent;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        text-transform: uppercase;
+        transition: color 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+        padding: 5px 0;
+      }
+
+      .store-btn:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #000;
+        transition:
+          width 400ms cubic-bezier(0.25, 0.8, 0.25, 1),
+          left 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .store-btn:hover:after,
+      .store-btn.active:after {
+        width: 100%;
+        left: 0%;
+      }
+
+      .store-btn.active {
+        color: #000;
+      }
+
+      /* === LAYOUT === */
+      .store-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+        text-align: center;
+      }
+
+      .product-grid {
+        display: none;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px 20px;
+        text-align: left;
+        opacity: 0;
+      }
+
+      .product-grid.active {
+        display: grid;
+        opacity: 1;
+      }
+
+      /* === PRODUCT CARD === */
+      .product-card {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .image-wrapper {
+        position: relative;
+        aspect-ratio: 3/4;
+        overflow: hidden;
+        background: #f7f7f7;
+      }
+
+      .image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .hover-image {
+        opacity: 0;
+        z-index: 1;
+      }
+
+      .action-overlay {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        transform: translateY(100%);
+        z-index: 5;
+        text-decoration: none;
+        color: #000;
+        display: block;
+      }
+
+      .product-meta {
+        margin-top: 12px;
+      }
+
+      .product-meta h3 {
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .product-price {
+        color: #666;
+        font-size: 14px;
+        margin-top: 5px;
+        font-weight: 900;
+        font-weight: bold;
+      }
+
+      /* === WISHLIST HEART === */
+      .wishlist-btn {
+        --heart-color: rgb(255, 91, 137);
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 25px;
+        height: 25px;
+        z-index: 10;
+      }
+
+      .wishlist-checkbox {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 12;
+        cursor: pointer;
+      }
+
+      .icon-svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: var(--heart-color);
+        stroke-width: 2;
+        position: absolute;
+      }
+
+      .icon-filled {
+        fill: var(--heart-color);
+        display: none;
+      }
+
+      .wishlist-checkbox:checked ~ .svg-wrapper .icon-filled {
+        display: block;
+        animation: heartPop 0.4s ease-out;
+      }
+
+      @keyframes heartPop {
+        0% {
+          transform: scale(0);
+        }
+        70% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* === VIEW MORE BUTTON === */
+      .view-more-btn {
+        text-decoration: none;
+        color: #000;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        padding-bottom: 5px;
+        display: inline-block;
+      }
+      .view-more-btn::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #000;
+        transform-origin: center;
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .view-more-btn:hover::after {
+        transform: scaleX(1);
+      }
+
+      /* === RESPONSIVE === */
+      @media (max-width: 1024px) {
+        .product-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .product-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .store-buttons {
+          gap: 15px;
+        }
+        .store-btn {
+          font-size: 12px;
+        }
+      }
+
+       /* === FOOTER === */
+    .site-footer {
+        background-color: #0a0a0a;
+        color: #fff;
+        padding: 80px 40px 40px;
+        position: relative;
+        z-index: 10;
+    }
+    .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 60px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-bottom: 60px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-brand {
+        flex: 1;
+        min-width: 300px;
+    }
+    .footer-brand h2 {
+        font-size: 2rem;
+        letter-spacing: 5px;
+        margin-bottom: 20px;
+    }
+    .footer-brand p {
+        color: #999;
+        margin-bottom: 30px;
+        font-size: 0.9rem;
+    }
+    .newsletter-form {
+        display: flex;
+        border-bottom: 1px solid #fff;
+        max-width: 400px;
+    }
+    .newsletter-form input {
+        background: transparent;
+        border: none;
+        color: #fff;
+        padding: 10px 0;
+        flex: 1;
+        outline: none;
+        font-family: inherit;
+    }
+    .newsletter-form button {
+        background: transparent;
+        border: none;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .footer-links {
+        display: flex;
+        gap: 80px;
+        flex-wrap: wrap;
+    }
+    .link-column h4 {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+        opacity: 0.8;
+    }
+    .link-column a {
+        display: block;
+        color: #999;
+        text-decoration: none;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+    .link-column a:hover {
+        color: #fff;
+    }
+    .footer-bottom {
+        max-width: 1400px;
+        margin: 40px auto 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #666;
+        font-size: 0.8rem;
+    }
+    .social-icons {
+        display: flex;
+        gap: 20px;
+    }
+    .social-icons svg {
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+    .social-icons svg:hover {
+        opacity: 0.7;
+    }
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            gap: 40px;
+        }
+        .footer-links {
+            gap: 40px;
+            justify-content: space-between;
+        }
+        .footer-bottom {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+        }
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #000;
+      background-color: red;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      display: none; /* Hidden by default until items added */
+    }
+    #checkoutBtn {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #checkoutBtn:hover {
+      background-color: #000 !important;
+      color: #fff !important;
+    }
+    /* === SHOPPING BAG SCROLL LOGIC === */
+    #shoppingBagPanel {
+      overflow: hidden !important; /* Prevents the entire panel from scrolling, allowing child to scroll */
+    }
+    .shopping-bag-content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* This is crucial for making a flex child scrollable */
+      min-height: 0; /* Works with overflow:hidden to enable child scrolling */
+    }
+    
+    #cartItemsContainer {
+      flex: 1; /* Allows this container to grow and fill available space */
+      overflow-y: auto; /* Enables vertical scrolling when content overflows */
+      overflow-x: hidden;
+      min-height: 0; /* Allows the container to shrink if needed */
+      padding-right: 10px; /* Adds space to prevent content from touching the scrollbar */
+    }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="overlay"></div>
+
+    <aside class="search-panel" id="searchPanel">
+      <div class="close-btn search-close" id="closeSearch">CLOSE ✕</div>
+      <div class="search-container" id="searchStagger">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search our collections..."
+        />
+        <div style="margin-top: 40px">
+          <p
+            style="
+              font-size: 14px;
+              letter-spacing: 3px;
+              color: #999;
+              text-transform: uppercase;
+            "
+          >
+            Trending Searches
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 25px;
+              justify-content: center;
+              margin-top: 20px;
+            "
+          >
+            <a href="#" class="stagger-trend">New In</a>
+            <a href="#" class="stagger-trend">Shoes</a>
+            <a href="#" class="stagger-trend">Hoodies</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <nav id="navbar">
+      <div class="nav-left" id="openContact">Contact Us</div>
+      <a href="Aura.html" class="logo-center">AURA</a>
+      <div class="nav-right">
+        <div class="nav-icon" id="shoppingBag">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M17 6h-2V5c0-1.65-1.35-3-3-3S9 3.35 9 5v1H7c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM12 4c.55 0 1 .45 1 1v1h-2V5c0-.55.45-1 1-1zM7 8h10v11H7V8z"
+            />
+          </svg>
+          <span class="cart-badge">0</span>
+        </div>
+        <div class="account-menu-container">
+          <div class="nav-icon account-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              />
+            </svg>
+          </div>
+          <div class="account-dropdown">
+            <a href="#" class="menu-link">Sign In/Log In</a>
+            <a href="#" class="menu-link">My Orders</a>
+            <a href="#" class="menu-link">Account Settings</a>
+            <a href="#" class="menu-link">Address Book</a>
+            <a href="#" class="menu-link">Wallet</a>
+            <a href="#" class="menu-link">Saved Items</a>
+          </div>
+        </div>
+        <div class="nav-icon" id="openSearch">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+        </div>
+        <span class="menu-text" id="openMenu">Menu ☰</span>
+      </div>
+    </nav>
+
+    <aside class="side-panel" id="menuPanel">
+      <div class="close-btn" id="closeMenu">CLOSE ✕</div>
+      <h2
+        style="
+          font-family: &quot;Playfair Display&quot;;
+          margin-bottom: 30px;
+          font-size: 24px;
+          font-weight: 700;
+        "
+      >
+        COLLECTIONS
+      </h2>
+      <a href="men.html" class="menu-link">MEN</a>
+      <a href="women.html" class="menu-link">WOMEN</a>
+      <a href="#" class="menu-link">NEW ARRIVAL</a>
+      <a href="#" class="menu-link">kIDS</a>
+    </aside>
+
+    <aside class="side-panel" id="shoppingBagPanel">
+      <div class="close-btn" id="closeBag">CLOSE ✕</div>
+      <div
+        style="
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding-bottom: 50px;
+          overflow: hidden;
+        "
+      >
+        <h2 style="font-family: &quot;Playfair Display&quot;; margin-bottom: 30px; text-align: center;">Shopping Bag</h2>
+        
+        <div id="emptyBagMessage" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+          <p style="font-size: 14px; color: #666; margin-bottom: 40px">Your shopping bag is empty.</p>
+          <a href="#" class="hover-anim" style="text-decoration: none; color: #000; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;">Continue Shopping</a>
+        </div>
+
+        <div id="cartItemsContainer" style="display: none; flex: 1; overflow-y: auto; overflow-x: hidden; padding-right: 5px;"></div>
+        
+        <div id="cartFooter" style="display: none; margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+          <button id="checkoutBtn" class="luxury-btn" style="width: 100%; background: #fff; color: #000; border: 1px solid #000; padding: 15px; font-size: 14px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;">
+            <span>CHECKOUT</span>
+            <span id="cartTotalPrice"></span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <aside class="side-panel" id="contactPanel">
+      <div class="close-btn" id="closeContact">CLOSE ✕</div>
+      <h2
+        class="stagger-contact"
+        style="
+          font-family: &quot;Playfair Display&quot;;
+          margin-bottom: 30px;
+          font-size: 24px;
+          font-weight: 700;
+        "
+      >
+        Contact Us
+      </h2>
+
+      <div class="contact-section stagger-contact">
+        <h4>Call Us</h4>
+        <p
+          style="
+            font-size: 16px;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 8px;
+          "
+        >
+          +1 (877) 482-2430
+        </p>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div class="contact-section stagger-contact">
+        <h4>Live Chat</h4>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div class="contact-section stagger-contact">
+        <h4>Message Us</h4>
+        <p>Monday - Saturday: 10 AM - 10 PM (EST)</p>
+        <p>Sunday: 10 AM - 9 PM (EST)</p>
+      </div>
+
+      <div
+        class="contact-section stagger-contact"
+        style="border-top: 1px solid #eee; padding-top: 30px; margin-top: 20px"
+      >
+        <p
+          style="
+            color: #000;
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 13px;
+            text-transform: uppercase;
+          "
+        >
+          Do you need further assistance?
+        </p>
+        <a
+          href="#"
+          class="luxury-btn"
+          style="
+            color: #000;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+          "
+          >Get in Contact with Us</a
+        >
+      </div>
+    </aside>
+
+    <div class="product-section-wrapper">
+      <header class="main-header">
+        <div class="store-branding">
+          <h2>Branded Women Products</h2>
+          <p>Select Your Category</p>
+          <div class="store-buttons">
+            <button class="store-btn active" id="bestSellerBtn">TOPWEAR</button>
+            <button class="store-btn" id="newInBtn">BOTTOMSWEAR</button>
+            <button class="store-btn" id="trendingBtn">FOOTWEAR</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="store-container">
+        <div id="bestsellers" class="product-grid active">
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top1.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover1.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>ELEGANT SILK TOP</h3>
+              <p class="product-price">₹2,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top2.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover2.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CASUAL COTTON TOP</h3>
+              <p class="product-price">₹1,299</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top3.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover3.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>STRIPED OFFICE SHIRT</h3>
+              <p class="product-price">₹1,899</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top4.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover4.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>BLACK V-NECK TOP</h3>
+              <p class="product-price">₹1,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top5.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover5.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CHECKERED CASUAL SHIRT</h3>
+              <p class="product-price">₹1,699</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top6.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover6.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>LINEN TUNIC TOP</h3>
+              <p class="product-price">₹1,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top7.jpg" class="base-image" alt="Product" />
+              <img
+                src="tophover7.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>DENIM CROP SHIRT</h3>
+              <p class="product-price">₹2,199</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top8.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover8.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>FLORAL SUMMER TOP</h3>
+              <p class="product-price">₹1,599</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top9.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover9.jpg"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>HIGH NECK BLOUSE</h3>
+              <p class="product-price">₹1,799</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top10.jpg" class="base-image" alt="Product" />
+              <img
+                src="tophover10.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>BEIGE OVERSIZED SHIRT</h3>
+              <p class="product-price">₹2,299</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top11.jpg" class="base-image" alt="Product" />
+              <img
+                src="tophover11.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CHAMBRAY TUNIC</h3>
+              <p class="product-price">₹1,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top12.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover12.jpg"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>VERTICAL STRIPE BLOUSE</h3>
+              <p class="product-price">₹1,899</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top13.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover13.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>KNITTED CROP TOP</h3>
+              <p class="product-price">₹1,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top14.jpg" class="base-image" alt="Product" />
+              <img
+                src="tophover14.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>SATIN PARTY TOP</h3>
+              <p class="product-price">₹2,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="top15.webp" class="base-image" alt="Product" />
+              <img
+                src="tophover15.jpg"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>BASIC WHITE TEE</h3>
+              <p class="product-price">₹999</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="new-in" class="product-grid">
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans1.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover1.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>HIGH WAIST TROUSERS</h3>
+              <p class="product-price">₹2,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans2.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover2.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>SKINNY FIT JEANS</h3>
+              <p class="product-price">₹2,299</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans3.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover3.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>UTILITY CARGO PANTS</h3>
+              <p class="product-price">₹2,699</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans4.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover4.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>FORMAL GREY PANTS</h3>
+              <p class="product-price">₹1,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans5.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover5.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>DENIM SHORTS</h3>
+              <p class="product-price">₹1,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans6.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover6.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>COMFY JOGGERS</h3>
+              <p class="product-price">₹1,699</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans7.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover7.jpg"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>WIDE LEG TROUSERS</h3>
+              <p class="product-price">₹2,199</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans8.jpg" class="base-image" alt="Product" />
+              <img
+                src="jeanshover8.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>RIPPED MOM JEANS</h3>
+              <p class="product-price">₹2,599</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans9.jpg" class="base-image" alt="Product" />
+              <img
+                src="jeanshover9.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>RELAXED FIT CARGOS</h3>
+              <p class="product-price">₹2,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="jeans10.webp" class="base-image" alt="Product" />
+              <img
+                src="jeanshover10.webp"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>LINEN CULOTTES</h3>
+              <p class="product-price">₹2,299</p>
+            </div>
+          </div>
+        </div>
+          
+         
+          
+         
+          
+
+        <div id="trending" class="product-grid">
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot1.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover1.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CHUNKY WHITE SNEAKERS</h3>
+              <p class="product-price">₹3,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot2.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover2.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CLASSIC RUNNING SHOES</h3>
+              <p class="product-price">₹2,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot3.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover3.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CASUAL LOAFERS</h3>
+              <p class="product-price">₹2,499</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot4.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover4.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>STRIPED SLIP-ONS</h3>
+              <p class="product-price">₹1,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot5.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover5.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>CANVAS SNEAKERS</h3>
+              <p class="product-price">₹2,299</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot6.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover6.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>PLATFORM SNEAKERS</h3>
+              <p class="product-price">₹3,999</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot7.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover7.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>COMFORT WALKERS</h3>
+              <p class="product-price">₹2,799</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot8.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover8.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>HIGH TOP SNEAKERS</h3>
+              <p class="product-price">₹3,299</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot9.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover9.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>PRINTED SLIP-ONS</h3>
+              <p class="product-price">₹1,899</p>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="image-wrapper">
+              <img src="foot10.avif" class="base-image" alt="Product" />
+              <img
+                src="foothover10.avif"
+                class="hover-image"
+                alt="Product Hover"
+              />
+              <a href="#" class="action-overlay">ADD TO CART</a>
+            </div>
+            <div class="product-meta">
+              <h3>SPORTY SNEAKERS</h3>
+              <p class="product-price">₹2,599</p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 50px; margin-bottom: 50px">
+          <a href="#" class="view-more-btn">View More</a>
+        </div>
+      </div>
+    </div>
+ 
+
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>AURA</h2>
+                <p>Subscribe to our newsletter for exclusive updates.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>Shop</h4>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Men</a>
+                    <a href="#">Women</a>
+                    <a href="#">Accessories</a>
+                </div>
+                <div class="link-column">
+                    <h4>Help</h4>
+                    <a href="#">Customer Service</a>
+                    <a href="#">Returns & Exchanges</a>
+                    <a href="#">Shipping</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="link-column">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Aura Luxury. All rights reserved.</p>
+            <div class="social-icons">
+                <svg viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692 1.002 0 1.865.075 2.116.109v2.191h-1.145z"/></svg>
+            </div>
+        </div>
+    </footer>
+    <script>
+      // Register ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+
+         const openOverlay = () => {
+        document.body.style.overflow = "hidden";
+        gsap.to("#overlay", { display: "block", opacity: 1, duration: 0.4 });
+      };
+      const closeOverlay = () => {
+        document.body.style.overflow = "";
+        gsap.to("#overlay", {
+          opacity: 0,
+          duration: 0.4,
+          onComplete: () => gsap.set("#overlay", { display: "none" }),
+        });
+      };
+
+      // Menu Timeline
+      const menuTL = gsap.timeline({
+        paused: true,
+        onStart: openOverlay,
+        onReverseComplete: closeOverlay,
+      });
+      menuTL
+        .to("#menuPanel", { right: 0, duration: 0.6, ease: "power4.out" })
+        .to(
+          "#menuPanel .menu-link",
+          { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 },
+          "-=0.3",
+        );
+
+      // Contact Timeline
+      const contactTL = gsap.timeline({
+        paused: true,
+        onStart: openOverlay,
+        onReverseComplete: closeOverlay,
+      });
+      contactTL
+        .to("#contactPanel", { left: 0, duration: 0.6, ease: "power4.out" })
+        .to(
+          ".stagger-contact",
+          { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 },
+          "-=0.3",
+        );
+
+      // Shopping Bag Timeline
+      const bagTL = gsap.timeline({
+        paused: true,
+        onStart: openOverlay,
+        onReverseComplete: closeOverlay,
+      });
+      bagTL.to("#shoppingBagPanel", {
+        right: 0,
+        duration: 0.6,
+        ease: "power4.out",
+      });
+
+      // Search Timeline
+      const searchTL = gsap.timeline({
+        paused: true,
+        onStart: openOverlay,
+        onReverseComplete: closeOverlay,
+      });
+      searchTL
+        .to("#searchPanel", { top: 0, duration: 0.6, ease: "power4.out" })
+        .to(".search-container", { opacity: 1, y: 0, duration: 0.4 }, "-=0.3");
+
+      // Event Listeners
+      // Account Dropdown Animation
+      const accountTL = gsap.timeline({ paused: true });
+      accountTL.to(".account-dropdown", {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+
+      const accountContainer = document.querySelector(
+        ".account-menu-container",
+      );
+      let accountTimer;
+      accountContainer.addEventListener("mouseenter", () => {
+        clearTimeout(accountTimer);
+        accountTL.play();
+      });
+      accountContainer.addEventListener("mouseleave", () => {
+        accountTimer = setTimeout(() => accountTL.reverse(), 300);
+      });
+
+      document.getElementById("openMenu").onclick = () => menuTL.play();
+      document.getElementById("closeMenu").onclick = () => menuTL.reverse();
+      document.getElementById("openContact").onclick = () => contactTL.play();
+      document.getElementById("closeContact").onclick = () =>
+        contactTL.reverse();
+      document.getElementById("shoppingBag").onclick = () => bagTL.play();
+      document.getElementById("closeBag").onclick = () => bagTL.reverse();
+      document.getElementById("openSearch").onclick = () => searchTL.play();
+      document.getElementById("closeSearch").onclick = () => searchTL.reverse();
+      document.getElementById("overlay").onclick = () => {
+        menuTL.reverse();
+        contactTL.reverse();
+        bagTL.reverse();
+        searchTL.reverse();
+      };
+
+      // Scroll Navbar Effect
+      ScrollTrigger.create({
+        start: "top -50",
+        onEnter: () =>
+          document.getElementById("navbar").classList.add("nav-white-bg"),
+        onLeaveBack: () =>
+          document.getElementById("navbar").classList.remove("nav-white-bg"),
+      });
+
+      // === SHOPPING BAG LOGIC ===
+      const cartContainer = document.getElementById('cartItemsContainer');
+      const emptyMsg = document.getElementById('emptyBagMessage');
+      const cartFooter = document.getElementById('cartFooter');
+      const totalPriceEl = document.getElementById('cartTotalPrice');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      function getCart() {
+        return JSON.parse(localStorage.getItem('auraCart')) || [];
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem('auraCart', JSON.stringify(cart));
+        renderCart();
+      }
+
+      function renderCart() {
+        const cart = getCart();
+        
+        // Update Badge
+        const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const badge = document.querySelector('.cart-badge');
+        if (badge) {
+          badge.innerText = totalQty;
+          badge.style.display = totalQty > 0 ? 'flex' : 'none';
+        }
+
+        if (!cartContainer || !emptyMsg || !cartFooter) return;
+
+        if (cart.length === 0) {
+          cartContainer.style.display = 'none';
+          cartFooter.style.display = 'none';
+          emptyMsg.style.display = 'flex';
+          cartContainer.innerHTML = '';
+        } else {
+          emptyMsg.style.display = 'none';
+          cartContainer.style.display = 'block';
+          cartFooter.style.display = 'block';
+
+          let total = 0;
+          let currency = '₹';
+          if (cart.length > 0) {
+             const priceMatch = cart[0].price.match(/^[^\d]+/);
+             if (priceMatch) currency = priceMatch[0];
+          }
+          cart.forEach(item => {
+              const price = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+              total += price * item.quantity;
+          });
+          if (totalPriceEl) {
+              totalPriceEl.innerText = currency + total.toLocaleString();
+          }
+
+          cartContainer.innerHTML = cart.map(item => `
+            <div class="cart-item" style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <img src="${item.image}" style="width: 60px; height: 80px; object-fit: cover;">
+                <div style="flex: 1;">
+                    <h4 style="font-size: 12px; margin: 0 0 5px 0; text-transform: uppercase; font-family: 'Inter', sans-serif;">${item.title}</h4>
+                    <p style="font-size: 12px; font-weight: bold; margin: 0; font-family: 'Inter', sans-serif;">${item.price}</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                        <button class="qty-btn" data-action="decrease" data-id="${item.id}" style="border: 1px solid #ddd; background: none; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
+                        <span style="font-size: 12px; min-width: 20px; text-align: center;">${item.quantity}</span>
+                        <button class="qty-btn" data-action="increase" data-id="${item.id}" style="border: 1px solid #ddd; background: none; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+                    </div>
+                </div>
+                <div class="remove-btn" data-action="remove" data-id="${item.id}" style="cursor: pointer; padding: 5px; color: #999;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+                </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Event Delegation
+      if (cartContainer) {
+        cartContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.qty-btn') || e.target.closest('.remove-btn');
+          if (!btn) return;
+
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          let cart = getCart();
+          const item = cart.find(i => i.id === id);
+
+          if (action === 'remove') {
+            cart = cart.filter(i => i.id !== id);
+          } else if (item) {
+            if (action === 'increase') item.quantity++;
+            if (action === 'decrease') {
+              item.quantity--;
+              if (item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+            }
+          }
+          saveCart(cart);
+        });
+      }
+
+      // Checkout Button Logic
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          checkoutBtn.style.backgroundColor = '#000';
+          checkoutBtn.style.color = '#fff';
+        });
+      }
+      // Hover effect for checkout button is now handled via CSS.
+
+      function showToast() {
+        const toast = document.getElementById('cartToast');
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // Add to Cart Logic
+      function addToCart(card) {
+        const img = card.querySelector('.base-image').src;
+        const title = card.querySelector('h3').innerText;
+        const price = card.querySelector('.product-price').innerText;
+        const id = title.replace(/\s+/g, '-').toLowerCase();
+
+        let cart = getCart();
+        const existing = cart.find(i => i.id === id);
+        
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({ id, title, price, image: img, quantity: 1 });
+        }
+        
+      saveCart(cart);
+      bagTL.play();
+    }
+
+
+      // 1. Initialize Animations for Hover
+      function initAnimations() {
+        document.querySelectorAll(".product-card").forEach((p) => {
+          const main = p.querySelector(".base-image");
+          const hover = p.querySelector(".hover-image");
+          const action = p.querySelector(".action-overlay");
+
+          p.addEventListener("mouseenter", () => {
+            gsap.to(main, { scale: 1.05, duration: 0.6 });
+            gsap.to(hover, { scale: 1.05, opacity: 1, duration: 0.6 });
+            gsap.to(action, { y: 0, duration: 0.4, ease: "power2.out" });
+          });
+
+          p.addEventListener("mouseleave", () => {
+            gsap.to(main, { scale: 1, duration: 0.6 });
+            gsap.to(hover, { scale: 1, opacity: 0, duration: 0.6 });
+            gsap.to(action, { y: "100%", duration: 0.3 });
+          });
+
+          action.addEventListener("click", (e) => {
+            e.preventDefault();
+            addToCart(p);
+          });
+        });
+      }
+
+      // 2. Inject Wishlist Hearts Dynamically
+      function injectWishlist() {
+        const heartHTML = `
+            <div class="wishlist-btn">
+                <input type="checkbox" class="wishlist-checkbox">
+                <div class="svg-wrapper">
+                    <svg viewBox="0 0 24 24" class="icon-svg">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <svg viewBox="0 0 24 24" class="icon-svg icon-filled">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+            </div>`;
+
+        document.querySelectorAll(".image-wrapper").forEach((box) => {
+          if (!box.querySelector(".wishlist-btn")) {
+            box.insertAdjacentHTML("beforeend", heartHTML);
+          }
+        });
+      }
+
+      // 3. Tab Switching Logic
+      function switchTab(targetGridId, clickedBtnId) {
+        const currentGrid = document.querySelector(".product-grid.active");
+        const nextGrid = document.getElementById(targetGridId);
+        const allBtns = document.querySelectorAll(".store-btn");
+        const activeBtn = document.getElementById(clickedBtnId);
+
+        if (currentGrid === nextGrid) return;
+
+        // Update Button UI
+        allBtns.forEach((btn) => btn.classList.remove("active"));
+        activeBtn.classList.add("active");
+
+        // Scroll to top of product section
+        const wrapper = document.querySelector(".product-section-wrapper");
+        if (wrapper) {
+          const navOffset = 100;
+          const targetY = wrapper.getBoundingClientRect().top + window.scrollY - navOffset;
+          window.scrollTo({
+            top: targetY,
+            behavior: "smooth",
+          });
+        }
+
+        // Animation Out -> Switch -> Animation In
+        gsap.to(currentGrid, {
+          opacity: 0,
+          y: 20,
+          duration: 0.3,
+          onComplete: () => {
+            currentGrid.classList.remove("active");
+            nextGrid.classList.add("active");
+
+            // Reset and Animate In
+            gsap.fromTo(
+              nextGrid,
+              { opacity: 0, y: 30 },
+              { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            );
+
+            // Stagger animate the cards inside
+            gsap.fromTo(
+              nextGrid.querySelectorAll(".product-card"),
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 },
+            );
+          },
+        });
+      }
+
+      // 4. Event Listeners
+      document
+        .getElementById("bestSellerBtn")
+        .addEventListener("click", () =>
+          switchTab("bestsellers", "bestSellerBtn"),
+        );
+      document
+        .getElementById("newInBtn")
+        .addEventListener("click", () => switchTab("new-in", "newInBtn"));
+      document
+        .getElementById("trendingBtn")
+        .addEventListener("click", () => switchTab("trending", "trendingBtn"));
+
+      // Initialize on load
+      window.onload = () => {
+        initAnimations();
+        injectWishlist();
+        renderCart();
+      };
+    </script>
+  </body>
+</html>
+       
+    
