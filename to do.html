@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Creative To-Do List</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .box {
+    width: 380px;
+    background: #ffffffdd;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #333;
+  }
+  .inputArea {
+    display: flex;
+    gap: 10px;
+  }
+  input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 15px;
+  }
+  button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #2575fc;
+    color: white;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+  button:hover {
+    background: #1b5fd8;
+  }
+  ul {
+    margin-top: 20px;
+    padding: 0;
+  }
+  li {
+    list-style: none;
+    background: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(8px);} 
+    to {opacity: 1; transform: translateY(0);} 
+  }
+  .del {
+    background: #ff4b5c;
+    color: white;
+    border: 0;
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .del:hover {
+    background: #e63f50;
+  }
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>✨ To‑Do List</h2>
+
+  <div class="inputArea">
+    <input id="task" type="text" placeholder="Write a task...">
+    <button onclick="addTask()">Add</button>
+  </div>
+
+  <ul id="list"></ul>
+</div>
+
+<script>
+function addTask(){
+  let task = document.getElementById("task").value;
+  if(task === "") return alert("Please enter a task!");
+
+  let li = document.createElement("li");
+  li.innerHTML = `<span>${task}</span> <button class='del' onclick='removeTask(this)'>Delete</button>`;
+
+  document.getElementById("list").appendChild(li);
+  document.getElementById("task").value = "";
+}
+
+function removeTask(btn){
+  btn.parentElement.remove();
+}
+</script>
+</body>
+</html>

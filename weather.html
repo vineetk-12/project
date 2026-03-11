@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    background: linear-gradient(160deg, #1e3c5a 0%, #0a1a2a 100%);
+    transition: background 1.2s ease;
+  }
+  body.sunny  { background: linear-gradient(160deg, #1a3a5c 0%, #0d2035 100%); }
+  body.cloudy { background: linear-gradient(160deg, #2c3e50 0%, #111a22 100%); }
+  body.rainy  { background: linear-gradient(160deg, #1c2b3a 0%, #080f16 100%); }
+  body.snowy  { background: linear-gradient(160deg, #2a3a4a 0%, #121e28 100%); }
+  body.stormy { background: linear-gradient(160deg, #1a1a2e 0%, #0f0f1f 100%); }
+  body.foggy  { background: linear-gradient(160deg, #2d3436 0%, #111a1b 100%); }
+  body.night  { background: linear-gradient(160deg, #0d1b2a 0%, #050d14 100%); }
+
+  .app { width: 100%; max-width: 340px; }
+
+  .search { position: relative; margin-bottom: 16px; }
+  .search input {
+    width: 100%; padding: 13px 48px 13px 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: all 0.2s;
+  }
+  .search input::placeholder { color: rgba(255,255,255,0.32); }
+  .search input:focus { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.28); }
+  .search button {
+    position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; background: rgba(255,255,255,0.14);
+    border: none; border-radius: 10px; color: #fff; font-size: 15px;
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .search button:hover { background: rgba(255,255,255,0.22); }
+
+  .loader { display: none; text-align: center; padding: 40px 0; }
+  .loader.show { display: block; }
+  .spinner { width: 28px; height: 28px; border: 2px solid rgba(255,255,255,0.1); border-top-color: rgba(255,255,255,0.7); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error { display: none; text-align: center; color: rgba(255,120,100,0.85); font-size: 14px; padding: 16px 0; }
+  .error.show { display: block; }
+
+  .card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 24px; padding: 26px 22px;
+    backdrop-filter: blur(20px); display: none;
+  }
+  .card.show { display: block; animation: up 0.35s ease; }
+  @keyframes up { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+  .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .loc-name { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
+  .loc-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .w-icon { font-size: 52px; line-height: 1; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+  .date { font-size: 11px; color: rgba(255,255,255,0.28); text-align: right; margin-bottom: 14px; }
+
+  .temp-row { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 4px; }
+  .temp { font-family: 'Syne', sans-serif; font-size: 68px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -2px; }
+  .temp-unit { font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.55); margin-bottom: 10px; }
+  .condition { font-size: 14px; color: rgba(255,255,255,0.55); text-transform: capitalize; margin-bottom: 2px; }
+  .feels { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 20px; }
+
+  .minmax { display: flex; gap: 10px; margin-bottom: 18px; }
+  .mm { flex:1; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 12px; }
+  .mm-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .mm-val { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: #fff; }
+
+  hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px; }
+
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; }
+  .stat-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
+  .stat-val span { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 400; opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="search">
+    <input type="text" id="city" placeholder="Search city…" onkeydown="if(event.key==='Enter')search()">
+    <button onclick="search()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+
+  <div class="loader" id="loader"><div class="spinner"></div></div>
+  <div class="error" id="error">City not found. Try again.</div>
+
+  <div class="card" id="card">
+    <div class="top">
+      <div>
+        <div class="loc-name" id="loc-name"></div>
+        <div class="loc-sub" id="loc-sub"></div>
+      </div>
+      <div class="w-icon" id="icon">🌤</div>
+    </div>
+    <div class="date" id="date"></div>
+    <div class="temp-row">
+      <div class="temp" id="temp"></div>
+      <div class="temp-unit">°C</div>
+    </div>
+    <div class="condition" id="condition"></div>
+    <div class="feels" id="feels"></div>
+    <div class="minmax">
+      <div class="mm"><div class="mm-label">↓ Min</div><div class="mm-val" id="tmin"></div></div>
+      <div class="mm"><div class="mm-label">↑ Max</div><div class="mm-val" id="tmax"></div></div>
+      <div class="mm"><div class="mm-label">💧 Humidity</div><div class="mm-val" id="hum"></div></div>
+    </div>
+    <hr>
+    <div class="stats">
+      <div class="stat"><div class="stat-label">💨 Wind</div><div class="stat-val" id="wind"></div></div>
+      <div class="stat"><div class="stat-label">👁 Visibility</div><div class="stat-val" id="vis"></div></div>
+      <div class="stat"><div class="stat-label">🌡 Pressure</div><div class="stat-val" id="pressure"></div></div>
+      <div class="stat"><div class="stat-label">☁️ Clouds</div><div class="stat-val" id="clouds"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_KEY = 'e3b59061852ec9817a5a5dd3a9528149';
+
+  function getIcon(id, isDay) {
+    if (id >= 200 && id < 300) return '⛈';
+    if (id >= 300 && id < 400) return '🌦';
+    if (id >= 500 && id < 510) return '🌧';
+    if (id >= 510 && id < 600) return '🌧';
+    if (id >= 600 && id < 700) return id === 600 ? '🌨' : '❄️';
+    if (id >= 700 && id < 800) return '🌫';
+    if (id === 800) return isDay ? '☀️' : '🌙';
+    if (id === 801) return '🌤';
+    if (id === 802) return '⛅';
+    if (id >= 803) return '☁️';
+    return '🌡';
+  }
+
+  function setBg(id, isDay) {
+    document.body.className = '';
+    if (!isDay) { document.body.classList.add('night'); return; }
+    if (id === 800 || id === 801) document.body.classList.add('sunny');
+    else if (id <= 804) document.body.classList.add('cloudy');
+    else if (id < 600) document.body.classList.add('rainy');
+    else if (id < 700) document.body.classList.add('snowy');
+    else if (id < 800) document.body.classList.add('foggy');
+    else if (id < 300) document.body.classList.add('stormy');
+  }
+
+  function s(id, v) { document.getElementById(id).innerHTML = v; }
+
+  async function search() {
+    const city = document.getElementById('city').value.trim();
+    if (!city) return;
+
+    document.getElementById('card').classList.remove('show');
+    document.getElementById('error').classList.remove('show');
+    document.getElementById('loader').classList.add('show');
+
+    try {
+      const res  = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`);
+      const data = await res.json();
+
+      if (data.cod !== 200) throw new Error();
+
+      const id    = data.weather[0].id;
+      const isDay = data.dt > data.sys.sunrise && data.dt < data.sys.sunset;
+
+      s('loc-name', data.name);
+      s('loc-sub',  data.sys.country);
+      s('icon',     getIcon(id, isDay));
+      s('temp',     Math.round(data.main.temp));
+      s('condition',data.weather[0].description);
+      s('feels',    `Feels like ${Math.round(data.main.feels_like)}°C`);
+      s('tmin',     Math.round(data.main.temp_min) + '°');
+      s('tmax',     Math.round(data.main.temp_max) + '°');
+      s('hum',      data.main.humidity + '%');
+      s('wind',     Math.round(data.wind.speed * 3.6) + '<span> km/h</span>');
+      s('vis',      (data.visibility / 1000).toFixed(1) + '<span> km</span>');
+      s('pressure', data.main.pressure + '<span> hPa</span>');
+      s('clouds',   data.clouds.all + '<span> %</span>');
+
+      const now = new Date();
+      s('date', now.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })
+        + ' · ' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' }));
+
+      setBg(id, isDay);
+      document.getElementById('card').classList.add('show');
+
+    } catch {
+      document.getElementById('error').classList.add('show');
+    } finally {
+      document.getElementById('loader').classList.remove('show');
+    }
+  }
+</script>
+</body>
+</html>
